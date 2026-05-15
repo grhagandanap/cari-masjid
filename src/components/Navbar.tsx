@@ -82,14 +82,14 @@ export function Navbar() {
 											</p>
 										</div>
 										<div className="p-1">
-											<button
-												type="button"
+											<Link
+												to="/profile"
 												className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-sm hover:bg-accent"
 												onClick={() => setMenuOpen(false)}
 											>
 												<UserIcon className="size-4" />
 												Profil
-											</button>
+											</Link>
 											<button
 												type="button"
 												className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-sm text-destructive hover:bg-destructive/10"
@@ -144,13 +144,22 @@ export function Navbar() {
 							Beranda
 						</Link>
 						{isAuth ? (
-							<Link
-								to="/mosque/add"
-								className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
-								onClick={() => setMobileOpen(false)}
-							>
-								Tambah Masjid
-							</Link>
+							<>
+								<Link
+									to="/mosque/add"
+									className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
+									onClick={() => setMobileOpen(false)}
+								>
+									Tambah Masjid
+								</Link>
+								<Link
+									to="/profile"
+									className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
+									onClick={() => setMobileOpen(false)}
+								>
+									Profil
+								</Link>
+							</>
 						) : (
 							<div className="mt-2 flex flex-col gap-2">
 								<Button asChild variant="outline">

@@ -15,6 +15,20 @@
       "when": 1778860820736,
       "tag": "0001_thankful_ulik",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778869999999,
+      "tag": "0002_add_user_profile_fields",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1778863812964,
+      "tag": "0003_illegal_marten_broadcloak",
+      "breakpoints": true
     }
   ]
 }
