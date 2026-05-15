@@ -2,7 +2,7 @@ import { useState, useMemo, useRef } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Map, Marker } from "pigeon-maps";
 import { toast } from "sonner";
-import { ImagePlus, X } from "lucide-react";
+import { ImagePlus, X, LocateFixed } from "lucide-react";
 import { requireAuth } from "#/lib/route-guard.ts";
 import { createMosque } from "#/lib/server/mosques.ts";
 import { Button } from "#/components/ui/button.tsx";
@@ -74,6 +74,27 @@ function AddMosquePage() {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [pending, setPending] = useState(false);
+	const [locating, setLocating] = useState(false);
+
+	function useCurrentLocation() {
+		if (!navigator.geolocation) {
+			toast.error("Geolokasi tidak didukung di browser ini.");
+			return;
+		}
+		setLocating(true);
+		navigator.geolocation.getCurrentPosition(
+			(pos) => {
+				setLatitude(String(pos.coords.latitude));
+				setLongitude(String(pos.coords.longitude));
+				setLocating(false);
+			},
+			() => {
+				toast.error("Gagal mendapatkan lokasi. Periksa izin lokasi Anda.");
+				setLocating(false);
+			},
+			{ enableHighAccuracy: true },
+		);
+	}
 
 	const mapCenter = useMemo<[number, number]>(() => {
 		const lat = parseFloat(latitude);
@@ -202,34 +223,52 @@ function AddMosquePage() {
 							</div>
 
 							{/* Koordinat */}
-							<div className="grid gap-4 sm:grid-cols-2">
-								<div className="flex flex-col gap-2">
-									<Label htmlFor="latitude">
-										Garis Lintang <span className="text-destructive">*</span>
-									</Label>
-									<Input
-										id="latitude"
-										type="number"
-										step="any"
-										required
-										value={latitude}
-										onChange={(ev) => setLatitude(ev.target.value)}
-										placeholder="-6.2088"
-									/>
+							<div className="flex flex-col gap-2">
+								<div className="flex items-center justify-between">
+									<Label>Koordinat <span className="text-destructive">*</span></Label>
+									<button
+										type="button"
+										onClick={useCurrentLocation}
+										disabled={locating}
+										className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700 disabled:opacity-60 dark:hover:bg-emerald-950/30 dark:hover:text-emerald-400"
+									>
+										{locating ? (
+											<span className="size-3.5 animate-spin rounded-full border border-current border-t-transparent" />
+										) : (
+											<LocateFixed className="size-3.5" />
+										)}
+										{locating ? "Mendapatkan lokasi…" : "Gunakan Lokasi Saya"}
+									</button>
 								</div>
-								<div className="flex flex-col gap-2">
-									<Label htmlFor="longitude">
-										Garis Bujur <span className="text-destructive">*</span>
-									</Label>
-									<Input
-										id="longitude"
-										type="number"
-										step="any"
-										required
-										value={longitude}
-										onChange={(ev) => setLongitude(ev.target.value)}
-										placeholder="106.8456"
-									/>
+								<div className="grid gap-4 sm:grid-cols-2">
+									<div className="flex flex-col gap-2">
+										<Label htmlFor="latitude">
+											Garis Lintang
+										</Label>
+										<Input
+											id="latitude"
+											type="number"
+											step="any"
+											required
+											value={latitude}
+											onChange={(ev) => setLatitude(ev.target.value)}
+											placeholder="-6.2088"
+										/>
+									</div>
+									<div className="flex flex-col gap-2">
+										<Label htmlFor="longitude">
+											Garis Bujur
+										</Label>
+										<Input
+											id="longitude"
+											type="number"
+											step="any"
+											required
+											value={longitude}
+											onChange={(ev) => setLongitude(ev.target.value)}
+											placeholder="106.8456"
+										/>
+									</div>
 								</div>
 							</div>
 
