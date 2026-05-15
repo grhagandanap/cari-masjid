@@ -328,25 +328,29 @@ function Dashboard() {
 									size="sm"
 									className="flex-1"
 									onClick={() =>
-										navigate({ to: `/mosque/${activeMosque.id}` })
+										navigate({
+											to: "/mosque/$mosqueId",
+											params: { mosqueId: activeMosque.id },
+											search: { directions: false },
+										})
 									}
 								>
 									View Details
 								</Button>
 								<Button
-									asChild
 									size="sm"
 									variant="outline"
 									className="gap-1.5"
+									onClick={() =>
+										navigate({
+											to: "/mosque/$mosqueId",
+											params: { mosqueId: activeMosque.id },
+											search: { directions: true },
+										})
+									}
 								>
-									<a
-										href={`https://www.google.com/maps/dir/?api=1&destination=${activeMosque.latitude},${activeMosque.longitude}`}
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										<Navigation className="size-3.5" />
-										Directions
-									</a>
+									<Navigation className="size-3.5" />
+									Directions
 								</Button>
 							</div>
 						</div>

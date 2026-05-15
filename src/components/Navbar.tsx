@@ -48,7 +48,7 @@ export function Navbar() {
 				</Link>
 
 				{/* Desktop nav */}
-				<nav className="hidden items-center gap-1 md:flex">
+				{/* <nav className="hidden items-center gap-1 md:flex">
 					<NavItem to="/" active={location.pathname === "/"}>
 						Home
 					</NavItem>
@@ -57,7 +57,7 @@ export function Navbar() {
 							Add Mosque
 						</NavItem>
 					) : null}
-				</nav>
+				</nav> */}
 
 				{/* Right side */}
 				<div className="flex items-center gap-2">

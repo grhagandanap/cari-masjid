@@ -101,6 +101,7 @@ function AddMosquePage() {
 			await navigate({
 				to: "/mosque/$mosqueId",
 				params: { mosqueId: mosque.id },
+				search: { directions: false },
 			});
 		} catch (err: any) {
 			console.error("createMosque error:", err);

@@ -1,4 +1,5 @@
-import { createFileRoute, useParams, Link } from "@tanstack/react-router";
+import { createFileRoute, useParams, Link, useNavigate } from "@tanstack/react-router";
+import { DirectionsView } from "#/components/DirectionsView.tsx";
 import {
 	Check,
 	X,
@@ -24,6 +25,9 @@ import {
 } from "#/components/ui/card.tsx";
 
 export const Route = createFileRoute("/mosque/$mosqueId")({
+	validateSearch: (search: Record<string, unknown>) => ({
+		directions: search.directions === true || search.directions === "true",
+	}),
 	loader: async ({ params }) => {
 		const mosque = await getMosqueDetails({ data: { mosqueId: params.mosqueId } });
 		return { mosque };
@@ -34,6 +38,26 @@ export const Route = createFileRoute("/mosque/$mosqueId")({
 function MosqueDetailsPage() {
 	const { mosqueId } = useParams({ from: "/mosque/$mosqueId" });
 	const { mosque } = Route.useLoaderData();
+	const { directions } = Route.useSearch();
+	const navigate = useNavigate();
+
+	if (directions && mosque) {
+		return (
+			<DirectionsView
+				mosqueName={mosque.name}
+				mosqueAddress={mosque.address}
+				lat={mosque.latitude}
+				lng={mosque.longitude}
+				onClose={() =>
+					navigate({
+						to: "/mosque/$mosqueId",
+						params: { mosqueId },
+						search: { directions: false },
+					})
+				}
+			/>
+		);
+	}
 
 	if (!mosque) {
 		return (
@@ -62,8 +86,6 @@ function MosqueDetailsPage() {
 		{ icon: Bath, label: "Restrooms", value: mosque.hasRestrooms },
 	];
 
-	const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${mosque.latitude},${mosque.longitude}`;
-
 	return (
 		<div className="flex flex-col px-4 py-12">
 			<div className="mx-auto w-full max-w-4xl">
@@ -90,11 +112,19 @@ function MosqueDetailsPage() {
 
 				{/* Actions */}
 				<div className="mt-6">
-					<Button asChild size="lg" className="gap-2">
-						<a href={directionsUrl} target="_blank" rel="noopener noreferrer">
-							<Navigation className="size-5" />
-							Get Directions
-						</a>
+					<Button
+						size="lg"
+						className="gap-2"
+						onClick={() =>
+							navigate({
+								to: "/mosque/$mosqueId",
+								params: { mosqueId },
+								search: { directions: true },
+							})
+						}
+					>
+						<Navigation className="size-5" />
+						Get Directions
 					</Button>
 				</div>
 
