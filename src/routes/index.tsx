@@ -19,10 +19,13 @@ import {
 	Globe,
 	Phone,
 	Accessibility,
+	ImageOff,
+	SlidersHorizontal,
+	Heart,
 } from "lucide-react";
 import { useAuth } from "#/hooks/use-auth.ts";
 import { useGeolocation } from "#/hooks/use-geolocation.ts";
-import { getNearbyMosques } from "#/lib/server/mosques.ts";
+import { getNearbyMosques, getMosqueDetails } from "#/lib/server/mosques.ts";
 import { Button } from "#/components/ui/button.tsx";
 
 export const Route = createFileRoute("/")({
@@ -177,7 +180,7 @@ function Landing() {
 							asChild
 							size="lg"
 							variant="outline"
-							className="border-white/40 bg-transparent px-7 text-white hover:bg-white/10 hover:text-white"
+							className="border-white/40 bg-transparent px-7 text-white hover:bg-white/10 hover:text-white-600"
 						>
 							<Link to="/auth/login" search={{ redirect: undefined }}>
 								Saya sudah punya akun
@@ -206,6 +209,15 @@ function Dashboard() {
 	const [sidebarView, setSidebarView] = useState<"list" | "detail">("list");
 	const [zoom, setZoom] = useState(13);
 	const navigate = useNavigate();
+	const [searchQuery, setSearchQuery] = useState("");
+	const [showFilters, setShowFilters] = useState(false);
+	const [filterType, setFilterType] = useState<"all" | "masjid" | "musholla">("all");
+	const [filterMaxDist, setFilterMaxDist] = useState(false);
+	const [filterFacilities, setFilterFacilities] = useState({
+		wudu: false, parking: false, toilet: false, separate: false, wheelchair: false,
+	});
+	const [photosCache, setPhotosCache] = useState<Record<string, string[]>>({});
+	const [photosLoading, setPhotosLoading] = useState(false);
 
 	useEffect(() => {
 		if (!location) return;
@@ -215,7 +227,7 @@ function Dashboard() {
 			data: { lat: location.lat, lng: location.lng },
 		})
 			.then((data) => setMosques(data))
-			.catch(() => setFetchError("Failed to load nearby mosques."))
+			.catch(() => setFetchError("Gagal memuat masjid terdekat."))
 			.finally(() => setLoading(false));
 	}, [location]);
 
@@ -226,9 +238,36 @@ function Dashboard() {
 
 	const activeMosque = mosques.find((m) => m.id === activeId) ?? null;
 
+	const filteredMosques = useMemo(() => {
+		return mosques.filter((m) => {
+			const q = searchQuery.trim().toLowerCase();
+			if (q && !m.name.toLowerCase().includes(q) && !m.address?.toLowerCase().includes(q)) return false;
+			if (filterType !== "all" && m.type.toLowerCase() !== filterType) return false;
+			if (filterMaxDist && m.distance > 1) return false;
+			if (filterFacilities.wudu && !m.hasWuduArea) return false;
+			if (filterFacilities.parking && !m.hasParking) return false;
+			if (filterFacilities.toilet && !m.hasRestrooms) return false;
+			if (filterFacilities.separate && !m.hasSeparateMenWomen) return false;
+			if (filterFacilities.wheelchair && !m.isWheelchairAccessible) return false;
+			return true;
+		});
+	}, [mosques, searchQuery, filterType, filterMaxDist, filterFacilities]);
+
+	const hasActiveFilter = filterType !== "all" || filterMaxDist || Object.values(filterFacilities).some(Boolean);
+
 	function openDetail(id: string) {
 		setActiveId(id);
 		setSidebarView("detail");
+		if (!photosCache[id]) {
+			setPhotosLoading(true);
+			getMosqueDetails({ data: { mosqueId: id } })
+				.then((data) => {
+					if (data?.photos) {
+						setPhotosCache((prev) => ({ ...prev, [id]: data.photos! }));
+					}
+				})
+				.finally(() => setPhotosLoading(false));
+		}
 	}
 
 	return (
@@ -237,7 +276,7 @@ function Dashboard() {
 			<div className="mb-5 flex flex-wrap items-end justify-between gap-3">
 				<div>
 					<p className="text-sm text-muted-foreground">
-						Assalamu&apos;alaikum, {user?.name?.split(" ")[0] || "friend"} 👋
+						Assalamu&apos;alaikum, {user?.name?.split(" ")[0] || "friend"}
 					</p>
 					<h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
 						Masjid di Sekitar Anda
@@ -252,7 +291,7 @@ function Dashboard() {
 						{geoLoading ? (
 							<div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">
 								<div className="size-8 animate-spin rounded-full border-2 border-muted border-t-primary" />
-								<p className="text-sm">Getting your location…</p>
+								<p className="text-sm">Mendapatkan lokasi Anda…</p>
 							</div>
 						) : (
 							<Map
@@ -291,15 +330,15 @@ function Dashboard() {
 					{geoError && !geoLoading ? (
 						<div className="absolute left-1/2 top-1/2 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border border-border bg-card p-5 text-center shadow-lg">
 							<MapPin className="mx-auto size-8 text-muted-foreground" />
-							<h3 className="mt-2 font-semibold">Location access needed</h3>
+							<h3 className="mt-2 font-semibold">Akses lokasi diperlukan</h3>
 							<p className="mt-1 text-sm text-muted-foreground">
-								Allow location access to see mosques near you.
+								Izinkan akses lokasi untuk melihat masjid terdekat.
 							</p>
 							<Button
 								className="mt-4"
 								onClick={() => window.location.reload()}
 							>
-								Allow Location Access
+								Izinkan Akses Lokasi
 							</Button>
 						</div>
 					) : null}
@@ -319,7 +358,7 @@ function Dashboard() {
 										</p>
 									) : null}
 									<p className="mt-1 text-xs font-medium text-emerald-700">
-										{activeMosque.distance.toFixed(1)} km away
+										{activeMosque.distance.toFixed(1)} km dari lokasi Anda
 									</p>
 								</div>
 								<button
@@ -364,6 +403,8 @@ function Dashboard() {
 					{sidebarView === "detail" && activeMosque ? (
 						<MosqueSidebarDetail
 							mosque={activeMosque}
+							photos={photosCache[activeMosque.id] ?? []}
+							photosLoading={photosLoading && !photosCache[activeMosque.id]}
 							onBack={() => setSidebarView("list")}
 							onDirections={() =>
 								navigate({
@@ -375,12 +416,88 @@ function Dashboard() {
 						/>
 					) : (
 						<>
-							<div className="border-b border-border px-4 py-3">
-								<div className="flex items-center gap-2 text-sm font-medium">
-									<Search className="size-4 text-muted-foreground" />
-									<span>Terdekat ({mosques.length})</span>
+							{/* Search + Filter */}
+							<div className="shrink-0 border-b border-border">
+								<div className="flex items-center gap-2 px-3 py-2.5">
+									<Search className="size-4 shrink-0 text-muted-foreground" />
+									<input
+										type="text"
+										placeholder="Cari nama atau alamat..."
+										className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+										value={searchQuery}
+										onChange={(e) => setSearchQuery(e.target.value)}
+									/>
+									{searchQuery && (
+										<button
+											type="button"
+											onClick={() => setSearchQuery("")}
+											className="text-muted-foreground hover:text-foreground"
+										>
+											<X className="size-3.5" />
+										</button>
+									)}
+									<button
+										type="button"
+										onClick={() => setShowFilters((v) => !v)}
+										className={`relative flex size-7 items-center justify-center rounded-md transition hover:bg-accent ${showFilters ? "bg-accent text-foreground" : "text-muted-foreground"}`}
+										aria-label="Filter"
+									>
+										<SlidersHorizontal className="size-4" />
+										{hasActiveFilter && (
+											<span className="absolute right-0.5 top-0.5 size-1.5 rounded-full bg-emerald-500" />
+										)}
+									</button>
+								</div>
+								{showFilters && (
+									<div className="space-y-2 border-t border-border/60 px-3 py-2.5">
+										{/* Type */}
+										<div className="flex gap-1">
+											{(["all", "masjid", "musholla"] as const).map((t) => (
+												<button
+													key={t}
+													type="button"
+													onClick={() => setFilterType(t)}
+													className={`rounded-full px-2.5 py-1 text-xs font-medium transition ${
+														filterType === t
+															? "bg-emerald-600 text-white"
+															: "bg-muted text-muted-foreground hover:bg-muted/80"
+													}`}
+												>
+													{t === "all" ? "Semua" : t.charAt(0).toUpperCase() + t.slice(1)}
+												</button>
+											))}
+										</div>
+										{/* Distance + Facilities */}
+										<div className="flex flex-wrap gap-1">
+											{[
+												{ key: "dist", label: "≤ 1 km", active: filterMaxDist, toggle: () => setFilterMaxDist((v) => !v) },
+												{ key: "wudu", label: "Wudu", active: filterFacilities.wudu, toggle: () => setFilterFacilities((v) => ({ ...v, wudu: !v.wudu })) },
+												{ key: "parking", label: "Parkir", active: filterFacilities.parking, toggle: () => setFilterFacilities((v) => ({ ...v, parking: !v.parking })) },
+												{ key: "toilet", label: "Toilet", active: filterFacilities.toilet, toggle: () => setFilterFacilities((v) => ({ ...v, toilet: !v.toilet })) },
+												{ key: "separate", label: "Pisah P/W", active: filterFacilities.separate, toggle: () => setFilterFacilities((v) => ({ ...v, separate: !v.separate })) },
+												{ key: "wheelchair", label: "Kursi Roda", active: filterFacilities.wheelchair, toggle: () => setFilterFacilities((v) => ({ ...v, wheelchair: !v.wheelchair })) },
+											].map(({ key, label, active, toggle }) => (
+												<button
+													key={key}
+													type="button"
+													onClick={toggle}
+													className={`rounded-full px-2.5 py-1 text-xs font-medium transition ${
+														active
+															? "bg-emerald-600 text-white"
+															: "bg-muted text-muted-foreground hover:bg-muted/80"
+													}`}
+												>
+													{label}
+												</button>
+											))}
+										</div>
+									</div>
+								)}
+								<div className="px-4 py-1 text-xs text-muted-foreground">
+									{loading ? "Memuat..." : `${filteredMosques.length} dari ${mosques.length} masjid`}
 								</div>
 							</div>
+							{/* List */}
 							<div className="flex-1 overflow-y-auto">
 								{loading ? (
 									<ListSkeleton />
@@ -404,9 +521,17 @@ function Dashboard() {
 											</Link>
 										</Button>
 									</div>
+								) : filteredMosques.length === 0 ? (
+									<div className="flex h-full flex-col items-center justify-center px-6 py-10 text-center">
+										<Search className="size-8 text-muted-foreground" />
+										<p className="mt-3 text-sm font-medium">Tidak ada hasil</p>
+										<p className="mt-1 text-xs text-muted-foreground">
+											Coba ubah kata kunci atau filter.
+										</p>
+									</div>
 								) : (
 									<ul className="divide-y divide-border">
-										{mosques.map((m) => (
+										{filteredMosques.map((m) => (
 											<li key={m.id}>
 												<button
 													type="button"
@@ -461,10 +586,14 @@ function ListSkeleton() {
 
 function MosqueSidebarDetail({
 	mosque,
+	photos,
+	photosLoading,
 	onBack,
 	onDirections,
 }: {
 	mosque: NearbyMosque;
+	photos: string[];
+	photosLoading: boolean;
 	onBack: () => void;
 	onDirections: () => void;
 }) {
@@ -551,6 +680,7 @@ function MosqueSidebarDetail({
 						)}
 						{mosque.contact && (
 							<a
+								href={`tel:${mosque.contact}`}
 								className="flex items-center gap-2 text-sm text-primary hover:underline"
 							>
 								<Phone className="size-4 shrink-0" />
@@ -559,6 +689,49 @@ function MosqueSidebarDetail({
 						)}
 					</div>
 				)}
+
+				{/* Foto */}
+				<div>
+					<p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Foto</p>
+					{photosLoading ? (
+						<div className="grid grid-cols-2 gap-2">
+							{[0, 1].map((i) => (
+								<div key={i} className="aspect-video animate-pulse rounded-lg bg-muted" />
+							))}
+						</div>
+					) : photos.length > 0 ? (
+						<div className="grid grid-cols-2 gap-2">
+							{photos.map((url, idx) => (
+								<div key={idx} className="aspect-video overflow-hidden rounded-lg bg-muted">
+									<img
+										src={url}
+										alt={`${mosque.name} foto ${idx + 1}`}
+										className="h-full w-full object-cover"
+									/>
+								</div>
+							))}
+						</div>
+					) : (
+						<div className="flex h-24 flex-col items-center justify-center rounded-lg border border-dashed">
+							<ImageOff className="size-5 text-muted-foreground" />
+							<p className="mt-1 text-xs text-muted-foreground">Belum ada foto</p>
+						</div>
+					)}
+				</div>
+			</div>
+
+			{/* Footer actions */}
+			<div className="shrink-0 space-y-2 border-t border-border p-3">
+				<Button className="w-full gap-2" onClick={onDirections}>
+					<Navigation className="size-4" />
+					Petunjuk Arah
+				</Button>
+				<Button asChild variant="outline" className="w-full gap-2">
+					<Link to="/donasi">
+						<Heart className="size-4" />
+						Donasi
+					</Link>
+				</Button>
 			</div>
 		</div>
 	);
