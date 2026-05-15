@@ -8,9 +8,17 @@ import {
 	Plus,
 	Navigation,
 	Search,
-	ArrowRight,
 	Sparkles,
 	HandHeart,
+	ArrowLeft,
+	Check,
+	X,
+	Droplets,
+	Car,
+	Bath,
+	Globe,
+	Phone,
+	Accessibility,
 } from "lucide-react";
 import { useAuth } from "#/hooks/use-auth.ts";
 import { useGeolocation } from "#/hooks/use-geolocation.ts";
@@ -65,18 +73,18 @@ function Landing() {
 	const features = [
 		{
 			icon: Compass,
-			title: "Discover Nearby",
-			desc: "Find mosques around you with real-time distance and one-tap directions.",
+			title: "Temukan Terdekat",
+			desc: "Temukan masjid di sekitar Anda dengan jarak real-time dan petunjuk arah satu ketuk.",
 		},
 		{
 			icon: Sparkles,
-			title: "Verified Facilities",
-			desc: "See wudu areas, parking, accessibility and more before you arrive.",
+			title: "Fasilitas Terverifikasi",
+			desc: "Lihat area wudu, parkir, aksesibilitas dan lainnya sebelum Anda tiba.",
 		},
 		{
 			icon: HandHeart,
-			title: "Community Driven",
-			desc: "Help others by adding mosques and keeping information up to date.",
+			title: "Digerakkan Komunitas",
+			desc: "Bantu sesama dengan menambahkan masjid dan menjaga informasi tetap terkini.",
 		},
 	];
 
@@ -96,24 +104,24 @@ function Landing() {
 			<section className="mx-auto flex min-h-[80vh] w-full max-w-5xl flex-col items-center justify-center px-4 py-20 text-center">
 				<div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/60 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
 					<span className="flex size-1.5 rounded-full bg-emerald-500" />
-					Connecting communities, one mosque at a time
+					Menghubungkan komunitas, satu masjid dalam satu waktu
 				</div>
 
 				<h1 className="display-title text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl">
-					Find your nearest{" "}
+					Temukan{" "}
 					<span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 bg-clip-text text-transparent">
-						mosque
+						masjid
 					</span>
-					,
-					<br className="hidden sm:block" /> with care &amp; clarity.
+					{" "}terdekat,
+					<br className="hidden sm:block" /> dengan mudah &amp; jelas.
 				</h1>
 
 				<p className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-					CariMasjid helps you discover prayer spaces around you, check facilities, get
-					directions, and contribute to a growing community map.
+					CariMasjid membantu Anda menemukan tempat sholat di sekitar, cek fasilitas,
+					dapatkan petunjuk arah, dan berkontribusi pada peta komunitas.
 				</p>
 
-				<div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
+				{/* <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
 					<Button asChild size="lg" className="gap-2 px-7">
 						<Link to="/auth/register">
 							Get Started
@@ -125,10 +133,10 @@ function Landing() {
 							Login
 						</Link>
 					</Button>
-				</div>
+				</div> */}
 
 				<p className="mt-6 text-xs text-muted-foreground">
-					Free forever · No credit card required
+					Gratis selamanya · Tanpa kartu kredit
 				</p>
 			</section>
 
@@ -152,10 +160,10 @@ function Landing() {
 				{/* CTA strip */}
 				<div className="mt-16 overflow-hidden rounded-3xl border border-border/60 bg-gradient-to-br from-emerald-600 to-teal-700 p-10 text-center text-white shadow-xl sm:p-14">
 					<h2 className="text-3xl font-bold sm:text-4xl">
-						Join the community today
+						Bergabung dengan komunitas sekarang
 					</h2>
 					<p className="mx-auto mt-4 max-w-xl text-emerald-50">
-						Sign up to view the live map of nearby mosques and add the ones you know.
+						Daftar untuk melihat peta masjid terdekat dan tambahkan yang Anda ketahui.
 					</p>
 					<div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
 						<Button
@@ -163,7 +171,7 @@ function Landing() {
 							size="lg"
 							className="bg-white px-7 text-emerald-700 hover:bg-emerald-50"
 						>
-							<Link to="/auth/register">Create free account</Link>
+							<Link to="/auth/register">Buat akun gratis</Link>
 						</Button>
 						<Button
 							asChild
@@ -172,7 +180,7 @@ function Landing() {
 							className="border-white/40 bg-transparent px-7 text-white hover:bg-white/10 hover:text-white"
 						>
 							<Link to="/auth/login" search={{ redirect: undefined }}>
-								I already have an account
+								Saya sudah punya akun
 							</Link>
 						</Button>
 					</div>
@@ -195,6 +203,7 @@ function Dashboard() {
 	const [loading, setLoading] = useState(false);
 	const [fetchError, setFetchError] = useState<string | null>(null);
 	const [activeId, setActiveId] = useState<string | null>(null);
+	const [sidebarView, setSidebarView] = useState<"list" | "detail">("list");
 	const [zoom, setZoom] = useState(13);
 	const navigate = useNavigate();
 
@@ -217,6 +226,11 @@ function Dashboard() {
 
 	const activeMosque = mosques.find((m) => m.id === activeId) ?? null;
 
+	function openDetail(id: string) {
+		setActiveId(id);
+		setSidebarView("detail");
+	}
+
 	return (
 		<main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6">
 			{/* Greeting */}
@@ -226,15 +240,9 @@ function Dashboard() {
 						Assalamu&apos;alaikum, {user?.name?.split(" ")[0] || "friend"} 👋
 					</p>
 					<h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-						Mosques around you
+						Masjid di Sekitar Anda
 					</h1>
 				</div>
-				<Button asChild className="gap-1.5">
-					<Link to="/mosque/add">
-						<Plus className="size-4" />
-						Add Mosque
-					</Link>
-				</Button>
 			</div>
 
 			<div className="grid gap-5 lg:grid-cols-[1fr_360px]">
@@ -327,15 +335,9 @@ function Dashboard() {
 								<Button
 									size="sm"
 									className="flex-1"
-									onClick={() =>
-										navigate({
-											to: "/mosque/$mosqueId",
-											params: { mosqueId: activeMosque.id },
-											search: { directions: false },
-										})
-									}
+									onClick={() => setSidebarView("detail")}
 								>
-									View Details
+									Lihat Detail
 								</Button>
 								<Button
 									size="sm"
@@ -350,75 +352,91 @@ function Dashboard() {
 									}
 								>
 									<Navigation className="size-3.5" />
-									Directions
+									Petunjuk Arah
 								</Button>
 							</div>
 						</div>
 					) : null}
 				</div>
 
-				{/* Side panel: mosque list */}
+				{/* Side panel */}
 				<aside className="flex max-h-[70vh] min-h-[480px] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-					<div className="border-b border-border px-4 py-3">
-						<div className="flex items-center gap-2 text-sm font-medium">
-							<Search className="size-4 text-muted-foreground" />
-							<span>Nearby ({mosques.length})</span>
-						</div>
-					</div>
-					<div className="flex-1 overflow-y-auto">
-						{loading ? (
-							<ListSkeleton />
-						) : fetchError ? (
-							<div className="p-6 text-center text-sm text-destructive">
-								{fetchError}
+					{sidebarView === "detail" && activeMosque ? (
+						<MosqueSidebarDetail
+							mosque={activeMosque}
+							onBack={() => setSidebarView("list")}
+							onDirections={() =>
+								navigate({
+									to: "/mosque/$mosqueId",
+									params: { mosqueId: activeMosque.id },
+									search: { directions: true },
+								})
+							}
+						/>
+					) : (
+						<>
+							<div className="border-b border-border px-4 py-3">
+								<div className="flex items-center gap-2 text-sm font-medium">
+									<Search className="size-4 text-muted-foreground" />
+									<span>Terdekat ({mosques.length})</span>
+								</div>
 							</div>
-						) : mosques.length === 0 ? (
-							<div className="flex h-full flex-col items-center justify-center px-6 py-10 text-center">
-								<Users className="size-8 text-muted-foreground" />
-								<p className="mt-3 text-sm font-medium">
-									No mosques found nearby
-								</p>
-								<p className="mt-1 text-xs text-muted-foreground">
-									Be the first to add one to help the community!
-								</p>
-								<Button asChild size="sm" className="mt-4 gap-1.5">
-									<Link to="/mosque/add">
-										<Plus className="size-4" />
-										Add Mosque
-									</Link>
-								</Button>
+							<div className="flex-1 overflow-y-auto">
+								{loading ? (
+									<ListSkeleton />
+								) : fetchError ? (
+									<div className="p-6 text-center text-sm text-destructive">
+										{fetchError}
+									</div>
+								) : mosques.length === 0 ? (
+									<div className="flex h-full flex-col items-center justify-center px-6 py-10 text-center">
+										<Users className="size-8 text-muted-foreground" />
+										<p className="mt-3 text-sm font-medium">
+											Tidak ada masjid di sekitar
+										</p>
+										<p className="mt-1 text-xs text-muted-foreground">
+											Jadi yang pertama menambahkan!
+										</p>
+										<Button asChild size="sm" className="mt-4 gap-1.5">
+											<Link to="/mosque/add">
+												<Plus className="size-4" />
+												Tambah Masjid
+											</Link>
+										</Button>
+									</div>
+								) : (
+									<ul className="divide-y divide-border">
+										{mosques.map((m) => (
+											<li key={m.id}>
+												<button
+													type="button"
+													onClick={() => openDetail(m.id)}
+													className={`flex w-full items-start gap-3 px-4 py-3 text-left transition hover:bg-accent/60 ${
+														m.id === activeId ? "bg-accent/80" : ""
+													}`}
+												>
+													<div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
+														<MapPin className="size-5" />
+													</div>
+													<div className="min-w-0 flex-1">
+														<p className="truncate font-medium">{m.name}</p>
+														{m.address ? (
+															<p className="truncate text-xs text-muted-foreground">
+																{m.address}
+															</p>
+														) : null}
+														<p className="mt-0.5 text-xs font-medium text-emerald-700">
+															{m.distance.toFixed(1)} km
+														</p>
+													</div>
+												</button>
+											</li>
+										))}
+									</ul>
+								)}
 							</div>
-						) : (
-							<ul className="divide-y divide-border">
-								{mosques.map((m) => (
-									<li key={m.id}>
-										<button
-											type="button"
-											onClick={() => setActiveId(m.id)}
-											className={`flex w-full items-start gap-3 px-4 py-3 text-left transition hover:bg-accent/60 ${
-												m.id === activeId ? "bg-accent/80" : ""
-											}`}
-										>
-											<div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
-												<MapPin className="size-5" />
-											</div>
-											<div className="min-w-0 flex-1">
-												<p className="truncate font-medium">{m.name}</p>
-												{m.address ? (
-													<p className="truncate text-xs text-muted-foreground">
-														{m.address}
-													</p>
-												) : null}
-												<p className="mt-0.5 text-xs font-medium text-emerald-700">
-													{m.distance.toFixed(1)} km
-												</p>
-											</div>
-										</button>
-									</li>
-								))}
-							</ul>
-						)}
-					</div>
+						</>
+					)}
 				</aside>
 			</div>
 		</main>
@@ -438,5 +456,110 @@ function ListSkeleton() {
 				</li>
 			))}
 		</ul>
+	);
+}
+
+function MosqueSidebarDetail({
+	mosque,
+	onBack,
+	onDirections,
+}: {
+	mosque: NearbyMosque;
+	onBack: () => void;
+	onDirections: () => void;
+}) {
+	const facilities: { icon: React.ElementType; label: string; value: boolean }[] = [
+		{ icon: Droplets, label: "Area Wudu", value: mosque.hasWuduArea },
+		{ icon: Users, label: "Pisah Pria/Wanita", value: mosque.hasSeparateMenWomen },
+		{ icon: Car, label: "Parkir", value: mosque.hasParking },
+		{ icon: Accessibility, label: "Ramah Kursi Roda", value: mosque.isWheelchairAccessible },
+		{ icon: Bath, label: "Toilet", value: mosque.hasRestrooms },
+	];
+
+	return (
+		<div className="flex h-full flex-col">
+			{/* Header */}
+			<div className="flex shrink-0 items-center gap-2 border-b border-border px-3 py-3">
+				<button
+					type="button"
+					onClick={onBack}
+					className="flex items-center gap-1 rounded-md px-1.5 py-1 text-xs text-muted-foreground transition hover:bg-accent hover:text-foreground"
+				>
+					<ArrowLeft className="size-3.5" />
+					Kembali
+				</button>
+			</div>
+
+			{/* Content */}
+			<div className="flex-1 overflow-y-auto p-4 space-y-4">
+				{/* Name & type */}
+				<div>
+					<span className="inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium capitalize text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+						{mosque.type}
+					</span>
+					<h2 className="mt-1.5 text-lg font-bold leading-tight">{mosque.name}</h2>
+					{mosque.address ? (
+						<p className="mt-1 flex items-start gap-1.5 text-sm text-muted-foreground">
+							<MapPin className="mt-0.5 size-3.5 shrink-0" />
+							{mosque.address}
+						</p>
+					) : null}
+					<p className="mt-1.5 text-xs font-semibold text-emerald-700">
+						{mosque.distance.toFixed(1)} km dari lokasi Anda
+					</p>
+				</div>
+
+				{/* Fasilitas */}
+				<div>
+					<p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Fasilitas</p>
+					<div className="grid grid-cols-2 gap-1.5">
+						{facilities.map(({ icon: Icon, label, value }) => (
+							<div
+								key={label}
+								className={`flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs ${
+									value
+										? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300"
+										: "bg-muted/50 text-muted-foreground line-through"
+								}`}
+							>
+								{value ? (
+									<Check className="size-3.5 shrink-0" />
+								) : (
+									<X className="size-3.5 shrink-0" />
+								)}
+								<Icon className="size-3.5 shrink-0" />
+								{label}
+							</div>
+						))}
+					</div>
+				</div>
+
+				{/* Kontak */}
+				{(mosque.website || mosque.contact) && (
+					<div className="space-y-1.5">
+						<p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Kontak</p>
+						{mosque.website && (
+							<a
+								href={mosque.website}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="flex items-center gap-2 text-sm text-primary hover:underline"
+							>
+								<Globe className="size-4 shrink-0" />
+								<span className="truncate">{mosque.website}</span>
+							</a>
+						)}
+						{mosque.contact && (
+							<a
+								className="flex items-center gap-2 text-sm text-primary hover:underline"
+							>
+								<Phone className="size-4 shrink-0" />
+								{mosque.contact}
+							</a>
+						)}
+					</div>
+				)}
+			</div>
+		</div>
 	);
 }

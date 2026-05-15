@@ -1,7 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Map, Marker } from "pigeon-maps";
 import { toast } from "sonner";
+import { ImagePlus, X } from "lucide-react";
 import { requireAuth } from "#/lib/route-guard.ts";
 import { createMosque } from "#/lib/server/mosques.ts";
 import { Button } from "#/components/ui/button.tsx";
@@ -40,17 +41,22 @@ interface FacilityState {
 }
 
 const facilityOptions: FacilityOption[] = [
-	{ id: "wudu", label: "Wudu Area", key: "hasWuduArea" },
-	{ id: "gender", label: "Separate Men/Women", key: "hasSeparateMenWomen" },
-	{ id: "parking", label: "Parking", key: "hasParking" },
-	{ id: "accessible", label: "Wheelchair Accessible", key: "isWheelchairAccessible" },
-	{ id: "restroom", label: "Restrooms", key: "hasRestrooms" },
+	{ id: "wudu", label: "Area Wudu", key: "hasWuduArea" },
+	{ id: "gender", label: "Pisah Pria/Wanita", key: "hasSeparateMenWomen" },
+	{ id: "parking", label: "Parkir", key: "hasParking" },
+	{ id: "accessible", label: "Ramah Kursi Roda", key: "isWheelchairAccessible" },
+	{ id: "restroom", label: "Toilet", key: "hasRestrooms" },
+];
+
+const MOSQUE_TYPES = [
+	{ value: "masjid", label: "Masjid" },
+	{ value: "musholla", label: "Musholla" },
 ];
 
 function AddMosquePage() {
 	const navigate = useNavigate();
 	const [name, setName] = useState("");
-	const [type, setType] = useState("");
+	const [type, setType] = useState("masjid");
 	const [latitude, setLatitude] = useState("");
 	const [longitude, setLongitude] = useState("");
 	const [address, setAddress] = useState("");
@@ -63,11 +69,43 @@ function AddMosquePage() {
 		isWheelchairAccessible: false,
 		hasRestrooms: false,
 	});
+	const [photos, setPhotos] = useState<{ file: File; dataUrl: string }[]>([]);
+	const [isDragging, setIsDragging] = useState(false);
+	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [pending, setPending] = useState(false);
 
+	const mapCenter = useMemo<[number, number]>(() => {
+		const lat = parseFloat(latitude);
+		const lng = parseFloat(longitude);
+		if (!Number.isNaN(lat) && !Number.isNaN(lng)) return [lat, lng];
+		return [-6.2088, 106.8456];
+	}, [latitude, longitude]);
+
 	function toggleFacility(key: keyof FacilityState) {
 		setFacilities((prev) => ({ ...prev, [key]: !prev[key] }));
+	}
+
+	function addFiles(fileList: FileList) {
+		Array.from(fileList).forEach((file) => {
+			if (!file.type.startsWith("image/")) return;
+			if (file.size > 5 * 1024 * 1024) {
+				toast.error(`${file.name} melebihi batas 5 MB.`);
+				return;
+			}
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				setPhotos((prev) => [
+					...prev,
+					{ file, dataUrl: e.target?.result as string },
+				]);
+			};
+			reader.readAsDataURL(file);
+		});
+	}
+
+	function removePhoto(idx: number) {
+		setPhotos((prev) => prev.filter((_, i) => i !== idx));
 	}
 
 	async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -80,7 +118,7 @@ function AddMosquePage() {
 			const lng = parseFloat(longitude);
 
 			if (Number.isNaN(lat) || Number.isNaN(lng)) {
-				setError("Latitude and Longitude must be valid numbers.");
+				setError("Garis Lintang dan Garis Bujur harus berupa angka yang valid.");
 				return;
 			}
 
@@ -93,11 +131,12 @@ function AddMosquePage() {
 					address: address || undefined,
 					website: website || undefined,
 					contact: contact || undefined,
+					photos: photos.map((p) => p.dataUrl),
 					...facilities,
 				},
 			});
 
-			toast.success(`${mosque.name} has been added successfully!`);
+			toast.success(`${mosque.name} berhasil ditambahkan!`);
 			await navigate({
 				to: "/mosque/$mosqueId",
 				params: { mosqueId: mosque.id },
@@ -105,10 +144,7 @@ function AddMosquePage() {
 			});
 		} catch (err: any) {
 			console.error("createMosque error:", err);
-			const message =
-				err?.message ||
-				"Failed to create mosque. Please try again.";
-			setError(message);
+			setError(err?.message || "Gagal menambahkan masjid. Coba lagi.");
 		} finally {
 			setPending(false);
 		}
@@ -117,53 +153,59 @@ function AddMosquePage() {
 	return (
 		<div className="flex flex-col px-4 py-12">
 			<div className="mx-auto w-full max-w-2xl">
-				<h1 className="text-3xl font-bold">Add a Mosque</h1>
+				<h1 className="text-3xl font-bold">Tambah Masjid</h1>
 				<p className="mt-2 text-muted-foreground">
-					Contribute to the community by adding a new mosque.
+					Berkontribusi untuk komunitas dengan menambahkan masjid baru.
 				</p>
 
 				<Card className="mt-8">
 					<CardHeader>
-						<CardTitle>Mosque Information</CardTitle>
+						<CardTitle>Informasi Masjid</CardTitle>
 						<CardDescription>
-							Fill in the details below. Fields marked with * are required.
+							Isi detail di bawah ini. Kolom bertanda{" "}
+							<span className="text-destructive">*</span> wajib diisi.
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<form className="flex flex-col gap-5" onSubmit={onSubmit}>
-							{/* Name */}
+							{/* Nama */}
 							<div className="flex flex-col gap-2">
 								<Label htmlFor="name">
-									Name <span className="text-destructive">*</span>
+									Nama <span className="text-destructive">*</span>
 								</Label>
 								<Input
 									id="name"
 									required
 									value={name}
 									onChange={(ev) => setName(ev.target.value)}
-									placeholder="e.g. Masjid Al-Haram"
+									placeholder="cth. Masjid Al-Haram"
 								/>
 							</div>
 
-							{/* Type */}
+							{/* Jenis */}
 							<div className="flex flex-col gap-2">
 								<Label htmlFor="type">
-									Type <span className="text-destructive">*</span>
+									Jenis <span className="text-destructive">*</span>
 								</Label>
-								<Input
+								<select
 									id="type"
-									required
 									value={type}
-									onChange={(ev) => setType(ev.target.value)}
-									placeholder="e.g. Jami, Musalla, Surau"
-								/>
+									onChange={(e) => setType(e.target.value)}
+									className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+								>
+									{MOSQUE_TYPES.map((t) => (
+										<option key={t.value} value={t.value}>
+											{t.label}
+										</option>
+									))}
+								</select>
 							</div>
 
-							{/* Coordinates */}
+							{/* Koordinat */}
 							<div className="grid gap-4 sm:grid-cols-2">
 								<div className="flex flex-col gap-2">
 									<Label htmlFor="latitude">
-										Latitude <span className="text-destructive">*</span>
+										Garis Lintang <span className="text-destructive">*</span>
 									</Label>
 									<Input
 										id="latitude"
@@ -177,7 +219,7 @@ function AddMosquePage() {
 								</div>
 								<div className="flex flex-col gap-2">
 									<Label htmlFor="longitude">
-										Longitude <span className="text-destructive">*</span>
+										Garis Bujur <span className="text-destructive">*</span>
 									</Label>
 									<Input
 										id="longitude"
@@ -191,18 +233,11 @@ function AddMosquePage() {
 								</div>
 							</div>
 
-							{/* Map Pin Dropper */}
+							{/* Peta */}
 							<div className="flex flex-col gap-2">
-								<Label>Drop the pin on the map</Label>
+								<Label>Tandai lokasi di peta</Label>
 								<Map
-									center={useMemo(() => {
-										const lat = parseFloat(latitude);
-										const lng = parseFloat(longitude);
-										if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
-											return [lat, lng] as [number, number];
-										}
-										return [-6.2088, 106.8456] as [number, number];
-									}, [latitude, longitude])}
+									center={mapCenter}
 									zoom={13}
 									height={280}
 									onClick={({ latLng }) => {
@@ -211,60 +246,67 @@ function AddMosquePage() {
 										setLongitude(String(lng));
 									}}
 								>
-									{(latitude && longitude) ? (
+									{latitude && longitude ? (
 										<Marker
-											anchor={[
-												parseFloat(latitude),
-												parseFloat(longitude),
-											]}
+											anchor={[parseFloat(latitude), parseFloat(longitude)]}
 											width={32}
 											height={32}
 										/>
 									) : null}
 								</Map>
 								<p className="text-xs text-muted-foreground">
-									Click anywhere on the map to set the location, or type coordinates manually.
+									Klik di peta untuk menentukan lokasi, atau isi koordinat secara manual.
 								</p>
 							</div>
 
-							{/* Address */}
+							{/* Alamat */}
 							<div className="flex flex-col gap-2">
-								<Label htmlFor="address">Address</Label>
+								<Label htmlFor="address">Alamat</Label>
 								<Textarea
 									id="address"
 									value={address}
 									onChange={(ev) => setAddress(ev.target.value)}
-									placeholder="Full street address"
+									placeholder="Alamat lengkap"
 								/>
 							</div>
 
 							{/* Website */}
 							<div className="flex flex-col gap-2">
-								<Label htmlFor="website">Website</Label>
+								<Label htmlFor="website">
+									Website{" "}
+									<span className="text-xs font-normal text-muted-foreground">
+										(opsional)
+									</span>
+								</Label>
 								<Input
 									id="website"
 									type="url"
 									value={website}
 									onChange={(ev) => setWebsite(ev.target.value)}
-									placeholder="https://example.com"
+									placeholder="https://contoh.com"
 								/>
 							</div>
 
-							{/* Contact */}
+							{/* Kontak */}
 							<div className="flex flex-col gap-2">
-								<Label htmlFor="contact">Contact</Label>
+								<Label htmlFor="contact">
+									Kontak{" "}
+									<span className="text-xs font-normal text-muted-foreground">
+										(opsional)
+									</span>
+								</Label>
 								<Input
 									id="contact"
 									type="tel"
 									value={contact}
 									onChange={(ev) => setContact(ev.target.value)}
-									placeholder="Phone number"
+									placeholder="Nomor telepon"
 								/>
 							</div>
 
-							{/* Facilities */}
+							{/* Fasilitas */}
 							<div className="flex flex-col gap-3">
-								<Label>Facilities</Label>
+								<Label>Fasilitas</Label>
 								<div className="grid gap-3 sm:grid-cols-2">
 									{facilityOptions.map((opt) => (
 										<div key={opt.id} className="flex items-center gap-2">
@@ -284,6 +326,81 @@ function AddMosquePage() {
 								</div>
 							</div>
 
+							{/* Foto */}
+							<div className="flex flex-col gap-3">
+								<Label>
+									Foto Masjid{" "}
+									<span className="text-xs font-normal text-muted-foreground">
+										(opsional)
+									</span>
+								</Label>
+
+								{/* Drop zone */}
+								<button
+									type="button"
+									className={`flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-6 py-8 text-center transition ${
+										isDragging
+											? "border-primary bg-primary/5"
+											: "border-border hover:border-primary/50 hover:bg-accent/40"
+									}`}
+									onDragOver={(e) => {
+										e.preventDefault();
+										setIsDragging(true);
+									}}
+									onDragLeave={() => setIsDragging(false)}
+									onDrop={(e) => {
+										e.preventDefault();
+										setIsDragging(false);
+										addFiles(e.dataTransfer.files);
+									}}
+									onClick={() => fileInputRef.current?.click()}
+								>
+									<input
+										ref={fileInputRef}
+										type="file"
+										accept="image/*"
+										multiple
+										className="hidden"
+										onChange={(e) => {
+											if (e.target.files) addFiles(e.target.files);
+											e.target.value = "";
+										}}
+									/>
+									<ImagePlus className="size-8 text-muted-foreground" />
+									<p className="text-sm font-medium">
+										Klik atau seret foto ke sini
+									</p>
+									<p className="text-xs text-muted-foreground">
+										PNG, JPG, WEBP — maks. 5 MB per foto
+									</p>
+								</button>
+
+								{/* Thumbnails */}
+								{photos.length > 0 && (
+									<div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+										{photos.map((p, i) => (
+											<div
+												key={i}
+												className="group relative aspect-video overflow-hidden rounded-lg bg-muted"
+											>
+												<img
+													src={p.dataUrl}
+													alt={p.file.name}
+													className="h-full w-full object-cover"
+												/>
+												<button
+													type="button"
+													onClick={() => removePhoto(i)}
+													className="absolute right-1 top-1 flex size-5 items-center justify-center rounded-full bg-background/80 text-foreground shadow opacity-0 transition group-hover:opacity-100"
+												>
+													<X className="size-3" />
+												</button>
+											</div>
+										))}
+									</div>
+								)}
+							</div>
+
 							{error ? (
 								<Alert variant="destructive">
 									<AlertDescription>{error}</AlertDescription>
@@ -295,7 +412,7 @@ function AddMosquePage() {
 								disabled={pending || !name || !type || !latitude || !longitude}
 								className="mt-2"
 							>
-								{pending ? "Submitting…" : "Add Mosque"}
+								{pending ? "Menyimpan…" : "Tambah Masjid"}
 							</Button>
 						</form>
 					</CardContent>

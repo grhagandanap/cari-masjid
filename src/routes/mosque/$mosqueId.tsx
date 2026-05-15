@@ -63,14 +63,14 @@ function MosqueDetailsPage() {
 		return (
 			<div className="flex flex-col px-4 py-12">
 				<div className="mx-auto w-full max-w-4xl text-center">
-					<h1 className="text-2xl font-bold">Mosque not found</h1>
+					<h1 className="text-2xl font-bold">Masjid tidak ditemukan</h1>
 					<p className="mt-2 text-muted-foreground">
-						We couldn&apos;t find a mosque with ID <code>{mosqueId}</code>.
+						Kami tidak dapat menemukan masjid dengan ID <code>{mosqueId}</code>.
 					</p>
 					<Button asChild className="mt-6">
 						<Link to="/">
 							<ArrowLeft className="mr-2 size-4" />
-							Back to Home
+							Kembali ke Beranda
 						</Link>
 					</Button>
 				</div>
@@ -79,11 +79,11 @@ function MosqueDetailsPage() {
 	}
 
 	const facilityItems = [
-		{ icon: Droplets, label: "Wudu Area", value: mosque.hasWuduArea },
-		{ icon: Users, label: "Separate Men/Women", value: mosque.hasSeparateMenWomen },
-		{ icon: Car, label: "Parking", value: mosque.hasParking },
-		{ icon: Accessibility, label: "Wheelchair Accessible", value: mosque.isWheelchairAccessible },
-		{ icon: Bath, label: "Restrooms", value: mosque.hasRestrooms },
+		{ icon: Droplets, label: "Area Wudu", value: mosque.hasWuduArea },
+		{ icon: Users, label: "Pisah Pria/Wanita", value: mosque.hasSeparateMenWomen },
+		{ icon: Car, label: "Parkir", value: mosque.hasParking },
+		{ icon: Accessibility, label: "Ramah Kursi Roda", value: mosque.isWheelchairAccessible },
+		{ icon: Bath, label: "Toilet", value: mosque.hasRestrooms },
 	];
 
 	return (
@@ -92,7 +92,7 @@ function MosqueDetailsPage() {
 				<Button asChild variant="ghost" className="mb-6 -ml-3">
 					<Link to="/">
 						<ArrowLeft className="mr-2 size-4" />
-						Back
+						Kembali
 					</Link>
 				</Button>
 
@@ -124,7 +124,7 @@ function MosqueDetailsPage() {
 						}
 					>
 						<Navigation className="size-5" />
-						Get Directions
+						Petunjuk Arah
 					</Button>
 				</div>
 
@@ -132,7 +132,7 @@ function MosqueDetailsPage() {
 				{(mosque.website || mosque.contact) && (
 					<Card className="mt-8">
 						<CardHeader>
-							<CardTitle>Contact</CardTitle>
+							<CardTitle>Kontak</CardTitle>
 						</CardHeader>
 						<CardContent className="space-y-3">
 							{mosque.website ? (
@@ -162,7 +162,7 @@ function MosqueDetailsPage() {
 				{/* Facilities */}
 				<Card className="mt-8">
 					<CardHeader>
-						<CardTitle>Facilities</CardTitle>
+						<CardTitle>Fasilitas</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<ul className="grid gap-3 sm:grid-cols-2">
@@ -196,7 +196,7 @@ function MosqueDetailsPage() {
 
 				{/* Photo Gallery */}
 				<div className="mt-8">
-					<h2 className="mb-4 text-2xl font-bold">Photos</h2>
+					<h2 className="mb-4 text-2xl font-bold">Foto</h2>
 					{mosque.photos && mosque.photos.length > 0 ? (
 						<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 							{mosque.photos.map((url, idx) => (
@@ -216,7 +216,7 @@ function MosqueDetailsPage() {
 						<div className="flex h-40 flex-col items-center justify-center rounded-lg border border-dashed">
 							<ImageOff className="size-8 text-muted-foreground" />
 							<p className="mt-2 text-sm text-muted-foreground">
-								No photos available.
+								Belum ada foto.
 							</p>
 						</div>
 					)}

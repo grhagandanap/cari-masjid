@@ -40,7 +40,7 @@ function LoginPage() {
 			});
 
 			if (signErr) {
-				setError(signErr.message ?? "Invalid email or password.");
+				setError(signErr.message ?? "Email atau kata sandi salah.");
 				return;
 			}
 
@@ -50,7 +50,7 @@ function LoginPage() {
 					: "/";
 			await navigate({ to: redirectTo });
 		} catch {
-			setError("Something went wrong. Try again.");
+			setError("Terjadi kesalahan. Coba lagi.");
 		} finally {
 			setPending(false);
 		}
@@ -60,9 +60,9 @@ function LoginPage() {
 		<div className="flex min-h-[70vh] flex-col items-center justify-center px-4 py-12">
 			<Card className="w-full max-w-md">
 				<CardHeader>
-					<CardTitle>Sign in</CardTitle>
+					<CardTitle>Masuk</CardTitle>
 					<CardDescription>
-						Enter your email and password to access your account.
+						Masukkan email dan kata sandi untuk mengakses akun Anda.
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -81,7 +81,7 @@ function LoginPage() {
 						</div>
 
 						<div className="flex flex-col gap-2">
-							<Label htmlFor="password">Password</Label>
+							<Label htmlFor="password">Kata Sandi</Label>
 							<Input
 								id="password"
 								type="password"
@@ -103,17 +103,17 @@ function LoginPage() {
 							disabled={pending || !email || !password}
 							className="mt-2"
 						>
-							{pending ? "Signing in…" : "Sign in"}
+							{pending ? "Masuk…" : "Masuk"}
 						</Button>
 					</form>
 
 					<p className="mt-6 text-center text-sm text-muted-foreground">
-						Don&apos;t have an account?{" "}
+						Belum punya akun?{" "}
 						<Link
 							to="/auth/register"
 							className="font-medium underline-offset-2 hover:underline"
 						>
-							Register
+							Daftar
 						</Link>
 					</p>
 				</CardContent>

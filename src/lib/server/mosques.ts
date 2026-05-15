@@ -97,6 +97,7 @@ export const createMosque = createServerFn({
 				hasParking?: boolean;
 				isWheelchairAccessible?: boolean;
 				hasRestrooms?: boolean;
+				photos?: string[];
 			},
 		) => data,
 	)
@@ -154,6 +155,17 @@ export const createMosque = createServerFn({
 				.returning();
 
 			console.log("[createMosque] insert succeeded, row:", row);
+
+			if (data.photos?.length) {
+				await db.insert(mosquePhotos).values(
+					data.photos.map((url) => ({
+						mosqueId: row.id,
+						url,
+						uploadedById: userId,
+					})),
+				);
+			}
+
 			return row;
 		} catch (err: any) {
 			console.error("[createMosque] DB error:", {

@@ -38,13 +38,13 @@ function RegisterPage() {
 			});
 
 			if (signErr) {
-				setError(signErr.message ?? "Could not create your account.");
+				setError(signErr.message ?? "Gagal membuat akun.");
 				return;
 			}
 
 			await navigate({ to: "/auth/login", search: { redirect: undefined } });
 		} catch {
-			setError("Something went wrong. Try again.");
+			setError("Terjadi kesalahan. Coba lagi.");
 		} finally {
 			setPending(false);
 		}
@@ -54,15 +54,15 @@ function RegisterPage() {
 		<div className="flex min-h-[70vh] flex-col items-center justify-center px-4 py-12">
 			<Card className="w-full max-w-md">
 				<CardHeader>
-					<CardTitle>Create your account</CardTitle>
+					<CardTitle>Buat Akun</CardTitle>
 					<CardDescription>
-						Join CariMasjid to add and discover mosques.
+						Bergabung dengan CariMasjid untuk menambahkan dan menemukan masjid.
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<form className="flex flex-col gap-4" onSubmit={onSubmit}>
 						<div className="flex flex-col gap-2">
-							<Label htmlFor="name">Name</Label>
+							<Label htmlFor="name">Nama</Label>
 							<Input
 								id="name"
 								type="text"
@@ -70,7 +70,7 @@ function RegisterPage() {
 								required
 								value={name}
 								onChange={(ev) => setName(ev.target.value)}
-								placeholder="Your name"
+								placeholder="Nama Anda"
 							/>
 						</div>
 
@@ -88,7 +88,7 @@ function RegisterPage() {
 						</div>
 
 						<div className="flex flex-col gap-2">
-							<Label htmlFor="password">Password</Label>
+							<Label htmlFor="password">Kata Sandi</Label>
 							<Input
 								id="password"
 								type="password"
@@ -99,7 +99,7 @@ function RegisterPage() {
 								onChange={(ev) => setPassword(ev.target.value)}
 							/>
 							<span className="text-xs text-muted-foreground">
-								At least 8 characters.
+								Minimal 8 karakter.
 							</span>
 						</div>
 
@@ -114,18 +114,18 @@ function RegisterPage() {
 							disabled={pending || !name || !email || !password}
 							className="mt-2"
 						>
-							{pending ? "Creating account…" : "Create account"}
+							{pending ? "Membuat akun…" : "Buat Akun"}
 						</Button>
 					</form>
 
 					<p className="mt-6 text-center text-sm text-muted-foreground">
-						Already have an account?{" "}
+						Sudah punya akun?{" "}
 						<Link
 							to="/auth/login"
 							className="font-medium underline-offset-2 hover:underline"
 							search={{ redirect: undefined }}
 						>
-							Sign in
+							Masuk
 						</Link>
 					</p>
 				</CardContent>

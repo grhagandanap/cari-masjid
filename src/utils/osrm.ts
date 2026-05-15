@@ -62,42 +62,42 @@ export function formatDuration(seconds: number): string {
 
 export function getStepInstruction(step: OsrmStep): string {
 	const { type, modifier } = step.maneuver;
-	const onto = step.name ? ` onto ${step.name}` : "";
+	const onto = step.name ? ` ke ${step.name}` : "";
 
-	if (type === "depart") return `Head ${modifier ?? "forward"}${onto}`;
-	if (type === "arrive") return "Arrive at destination";
-	if (type === "continue" || type === "new name") return `Continue${onto}`;
-	if (type === "merge") return `Merge${onto}`;
-	if (type === "roundabout" || type === "rotary") return "Enter the roundabout";
+	if (type === "depart") return `Mulai perjalanan${onto}`;
+	if (type === "arrive") return "Tiba di tujuan";
+	if (type === "continue" || type === "new name") return `Lanjutkan${onto}`;
+	if (type === "merge") return `Gabung${onto}`;
+	if (type === "roundabout" || type === "rotary") return "Masuk bundaran";
 	if (type === "exit roundabout" || type === "exit rotary")
-		return `Exit the roundabout${onto}`;
-	if (type === "fork") return `Keep ${modifier ?? "straight"} at the fork`;
-	if (type === "on ramp") return `Take the ramp${onto}`;
-	if (type === "off ramp") return `Take the exit${onto}`;
+		return `Keluar bundaran${onto}`;
+	if (type === "fork") return `Tetap ${modifier ?? "lurus"} di persimpangan`;
+	if (type === "on ramp") return `Ambil jalur${onto}`;
+	if (type === "off ramp") return `Ambil jalan keluar${onto}`;
 
 	if (type === "turn") {
 		const dir =
 			modifier === "uturn"
-				? "Make a U-turn"
+				? "Putar balik"
 				: modifier === "sharp left"
-					? "Sharp left"
+					? "Belok tajam kiri"
 					: modifier === "left"
-						? "Turn left"
+						? "Belok kiri"
 						: modifier === "slight left"
-							? "Slight left"
+							? "Sedikit ke kiri"
 							: modifier === "straight"
-								? "Go straight"
+								? "Lurus"
 								: modifier === "slight right"
-									? "Slight right"
+									? "Sedikit ke kanan"
 									: modifier === "right"
-										? "Turn right"
+										? "Belok kanan"
 										: modifier === "sharp right"
-											? "Sharp right"
-											: "Continue";
+											? "Belok tajam kanan"
+											: "Lanjutkan";
 		return `${dir}${onto}`;
 	}
 
-	return `Continue${onto}`;
+	return `Lanjutkan${onto}`;
 }
 
 export function lngLatToPixel(

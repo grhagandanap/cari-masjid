@@ -115,7 +115,7 @@ export function DirectionsView({
 					className="flex items-center gap-1.5 rounded-md px-2 py-1 text-sm text-muted-foreground transition hover:bg-accent hover:text-foreground"
 				>
 					<ArrowLeft className="size-4" />
-					Back
+					Kembali
 				</button>
 
 				<div className="min-w-0 flex-1">
@@ -144,7 +144,7 @@ export function DirectionsView({
 						}`}
 					>
 						<Car className="size-3.5" />
-						Drive
+						Berkendara
 					</button>
 					<button
 						type="button"
@@ -156,7 +156,7 @@ export function DirectionsView({
 						}`}
 					>
 						<Footprints className="size-3.5" />
-						Walk
+						Jalan Kaki
 					</button>
 				</div>
 
@@ -182,7 +182,7 @@ export function DirectionsView({
 					{geoLoading ? (
 						<div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">
 							<Loader2 className="size-6 animate-spin" />
-							<p className="text-sm">Getting your location…</p>
+							<p className="text-sm">Mendapatkan lokasi Anda…</p>
 						</div>
 					) : (
 						<Map
@@ -240,7 +240,7 @@ export function DirectionsView({
 					{routeLoading && (
 						<div className="absolute right-3 top-3 flex items-center gap-2 rounded-full border border-border bg-background/90 px-3 py-1.5 text-xs shadow-sm backdrop-blur">
 							<Loader2 className="size-3.5 animate-spin" />
-							Calculating…
+							Menghitung…
 						</div>
 					)}
 				</div>
@@ -269,15 +269,15 @@ export function DirectionsView({
 										.finally(() => setRouteLoading(false));
 								}}
 							>
-								Retry
+								Coba Lagi
 							</Button>
 						</div>
 					) : !location && !geoLoading ? (
 						<div className="flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center">
 							<Navigation className="size-8 text-muted-foreground" />
-							<p className="text-sm font-medium">Location access needed</p>
+							<p className="text-sm font-medium">Akses lokasi diperlukan</p>
 							<p className="text-xs text-muted-foreground">
-								Allow location access to get directions.
+								Izinkan akses lokasi untuk mendapatkan petunjuk arah.
 							</p>
 						</div>
 					) : routeLoading || geoLoading ? (
@@ -300,7 +300,7 @@ export function DirectionsView({
 										</p>
 										<p className="text-sm text-muted-foreground">
 											{formatDuration(route.duration)} ·{" "}
-											{mode === "driving" ? "by car" : "on foot"}
+											{mode === "driving" ? "berkendara" : "berjalan kaki"}
 										</p>
 									</div>
 								</div>

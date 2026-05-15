@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useRouter, useLocation } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { MapPin, Plus, LogOut, User as UserIcon, Menu, X } from "lucide-react";
 import { useAuth, signOut } from "#/hooks/use-auth.ts";
 import { Button } from "#/components/ui/button.tsx";
@@ -7,7 +7,6 @@ import { Button } from "#/components/ui/button.tsx";
 export function Navbar() {
 	const { user, isPending } = useAuth();
 	const router = useRouter();
-	const location = useLocation();
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const menuRef = useRef<HTMLDivElement | null>(null);
@@ -47,18 +46,6 @@ export function Navbar() {
 					<span className="text-lg">CariMasjid</span>
 				</Link>
 
-				{/* Desktop nav */}
-				{/* <nav className="hidden items-center gap-1 md:flex">
-					<NavItem to="/" active={location.pathname === "/"}>
-						Home
-					</NavItem>
-					{isAuth ? (
-						<NavItem to="/mosque/add" active={location.pathname === "/mosque/add"}>
-							Add Mosque
-						</NavItem>
-					) : null}
-				</nav> */}
-
 				{/* Right side */}
 				<div className="flex items-center gap-2">
 					{isPending ? (
@@ -68,7 +55,7 @@ export function Navbar() {
 							<Button asChild variant="outline" size="sm" className="hidden gap-1.5 sm:inline-flex">
 								<Link to="/mosque/add">
 									<Plus className="size-4" />
-									Add Mosque
+									Tambah Masjid
 								</Link>
 							</Button>
 							<div className="relative" ref={menuRef}>
@@ -88,7 +75,7 @@ export function Navbar() {
 									<div className="absolute right-0 mt-2 w-56 overflow-hidden rounded-lg border border-border bg-popover text-popover-foreground shadow-lg">
 										<div className="border-b border-border px-3 py-2.5">
 											<p className="truncate text-sm font-medium">
-												{user.name || "Account"}
+												{user.name || "Akun"}
 											</p>
 											<p className="truncate text-xs text-muted-foreground">
 												{user.email}
@@ -101,7 +88,7 @@ export function Navbar() {
 												onClick={() => setMenuOpen(false)}
 											>
 												<UserIcon className="size-4" />
-												Profile
+												Profil
 											</button>
 											<button
 												type="button"
@@ -109,7 +96,7 @@ export function Navbar() {
 												onClick={handleSignOut}
 											>
 												<LogOut className="size-4" />
-												Sign out
+												Keluar
 											</button>
 										</div>
 									</div>
@@ -120,11 +107,11 @@ export function Navbar() {
 						<div className="hidden items-center gap-2 sm:flex">
 							<Button asChild variant="ghost" size="sm">
 								<Link to="/auth/login" search={{ redirect: undefined }}>
-									Login
+									Masuk
 								</Link>
 							</Button>
 							<Button asChild size="sm">
-								<Link to="/auth/register">Register</Link>
+								<Link to="/auth/register">Daftar</Link>
 							</Button>
 						</div>
 					)}
@@ -150,7 +137,7 @@ export function Navbar() {
 							className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
 							onClick={() => setMobileOpen(false)}
 						>
-							Home
+							Beranda
 						</Link>
 						{isAuth ? (
 							<Link
@@ -158,17 +145,17 @@ export function Navbar() {
 								className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
 								onClick={() => setMobileOpen(false)}
 							>
-								Add Mosque
+								Tambah Masjid
 							</Link>
 						) : (
 							<div className="mt-2 flex flex-col gap-2">
 								<Button asChild variant="outline">
 									<Link to="/auth/login" search={{ redirect: undefined }}>
-										Login
+										Masuk
 									</Link>
 								</Button>
 								<Button asChild>
-									<Link to="/auth/register">Register</Link>
+									<Link to="/auth/register">Daftar</Link>
 								</Button>
 							</div>
 						)}
@@ -176,28 +163,5 @@ export function Navbar() {
 				</div>
 			) : null}
 		</header>
-	);
-}
-
-function NavItem({
-	to,
-	active,
-	children,
-}: {
-	to: string;
-	active?: boolean;
-	children: React.ReactNode;
-}) {
-	return (
-		<Link
-			to={to}
-			className={`rounded-md px-3 py-1.5 text-sm font-medium no-underline transition ${
-				active
-					? "bg-accent text-accent-foreground"
-					: "text-muted-foreground hover:bg-accent hover:text-foreground"
-			}`}
-		>
-			{children}
-		</Link>
 	);
 }
