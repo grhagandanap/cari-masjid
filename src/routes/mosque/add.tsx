@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Map, Marker } from "pigeon-maps";
 import { requireAuth } from "#/lib/route-guard.ts";
 import { createMosque } from "#/lib/server/mosques.ts";
 import { Button } from "#/components/ui/button.tsx";
@@ -178,6 +179,42 @@ function AddMosquePage() {
 										placeholder="106.8456"
 									/>
 								</div>
+							</div>
+
+							{/* Map Pin Dropper */}
+							<div className="flex flex-col gap-2">
+								<Label>Drop the pin on the map</Label>
+								<Map
+									center={useMemo(() => {
+										const lat = parseFloat(latitude);
+										const lng = parseFloat(longitude);
+										if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+											return [lat, lng] as [number, number];
+										}
+										return [-6.2088, 106.8456] as [number, number];
+									}, [latitude, longitude])}
+									zoom={13}
+									height={280}
+									onClick={({ latLng }) => {
+										const [lat, lng] = latLng;
+										setLatitude(String(lat));
+										setLongitude(String(lng));
+									}}
+								>
+									{(latitude && longitude) ? (
+										<Marker
+											anchor={[
+												parseFloat(latitude),
+												parseFloat(longitude),
+											]}
+											width={32}
+											height={32}
+										/>
+									) : null}
+								</Map>
+								<p className="text-xs text-muted-foreground">
+									Click anywhere on the map to set the location, or type coordinates manually.
+								</p>
 							</div>
 
 							{/* Address */}

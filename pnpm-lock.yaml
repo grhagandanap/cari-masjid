@@ -59,6 +59,9 @@ importers:
       pg:
         specifier: ^8.20.0
         version: 8.20.0
+      pigeon-maps:
+        specifier: ^0.22.1
+        version: 0.22.1(react@19.2.6)
       postgres:
         specifier: ^3.4.9
         version: 3.4.9
@@ -3144,6 +3147,11 @@ packages:
   picomatch@4.0.4:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
     engines: {node: '>=12'}
+
+  pigeon-maps@0.22.1:
+    resolution: {integrity: sha512-mVWxgpIyhAekITeJvDGlFAo/Ytm6Fg7prpDiAuQ0Z6cJ/LwpnS8F0sF+0TDqyJu7C/DDHupkstFTNoIRqhdP5A==}
+    peerDependencies:
+      react: '*'
 
   postcss-selector-parser@6.0.10:
     resolution: {integrity: sha512-IQ7TZdoaqbT+LCpShg46jnZVlhWD2w6iQYAcYXfHARZ7X1t/UGhhceQDs5X0cGqKvYlHNOuv7Oa1xmb0oQuA3w==}
@@ -6400,6 +6408,10 @@ snapshots:
   picomatch@2.3.2: {}
 
   picomatch@4.0.4: {}
+
+  pigeon-maps@0.22.1(react@19.2.6):
+    dependencies:
+      react: 19.2.6
 
   postcss-selector-parser@6.0.10:
     dependencies:
