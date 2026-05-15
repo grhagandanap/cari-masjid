@@ -95,13 +95,13 @@ This document breaks down the Product Requirements Document (PRD) into small, ex
 ## Phase 7: UI - Mosque Details Page
 *Detailed view for a specific mosque.*
 
-- [ ] **7.1 Create Dynamic Route (`src/routes/mosque/$mosqueId.tsx`):**
+- [x] **7.1 Create Dynamic Route (`src/routes/mosque/$mosqueId.tsx`):**
   - Define `loader` to fetch `getMosqueDetails({ mosqueId })`.
-- [ ] **7.2 Build Details UI (`src/routes/mosque/$mosqueId.tsx`):**
+- [x] **7.2 Build Details UI (`src/routes/mosque/$mosqueId.tsx`):**
   - Display Mosque Name and Address prominently.
   - Show a list of facilities with checkmarks/crosses.
   - Display the photo gallery.
-- [ ] **7.3 Add Navigation Action:**
+- [x] **7.3 Add Navigation Action:**
   - Add a highly visible Button: "Get Directions".
   - The `href` should be `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`.
 

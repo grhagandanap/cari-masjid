@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MosqueAddRouteImport } from './routes/mosque/add'
 import { Route as MosqueMosqueIdRouteImport } from './routes/mosque/$mosqueId'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
@@ -18,6 +19,11 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MosqueAddRoute = MosqueAddRouteImport.update({
+  id: '/mosque/add',
+  path: '/mosque/add',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MosqueMosqueIdRoute = MosqueMosqueIdRouteImport.update({
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/mosque/$mosqueId': typeof MosqueMosqueIdRoute
+  '/mosque/add': typeof MosqueAddRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/mosque/$mosqueId': typeof MosqueMosqueIdRoute
+  '/mosque/add': typeof MosqueAddRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
@@ -61,6 +69,7 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/mosque/$mosqueId': typeof MosqueMosqueIdRoute
+  '/mosque/add': typeof MosqueAddRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
@@ -70,6 +79,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/mosque/$mosqueId'
+    | '/mosque/add'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -77,6 +87,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/mosque/$mosqueId'
+    | '/mosque/add'
     | '/api/auth/$'
   id:
     | '__root__'
@@ -84,6 +95,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/mosque/$mosqueId'
+    | '/mosque/add'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
@@ -92,6 +104,7 @@ export interface RootRouteChildren {
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
   MosqueMosqueIdRoute: typeof MosqueMosqueIdRoute
+  MosqueAddRoute: typeof MosqueAddRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -102,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mosque/add': {
+      id: '/mosque/add'
+      path: '/mosque/add'
+      fullPath: '/mosque/add'
+      preLoaderRoute: typeof MosqueAddRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mosque/$mosqueId': {
@@ -140,6 +160,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
   MosqueMosqueIdRoute: MosqueMosqueIdRoute,
+  MosqueAddRoute: MosqueAddRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
