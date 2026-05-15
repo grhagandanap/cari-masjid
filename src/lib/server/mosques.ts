@@ -5,6 +5,7 @@ import { mosques, mosquePhotos, user } from "#/db/schema.ts";
 import { calculateDistance } from "#/utils/distance.ts";
 import { sql } from "drizzle-orm";
 import { auth } from "#/lib/auth.ts";
+import { supabase } from "#/lib/supabase";
 
 export const getNearbyMosques = createServerFn({
 	method: "GET",
@@ -157,14 +158,40 @@ export const createMosque = createServerFn({
 			console.log("[createMosque] insert succeeded, row:", row);
 
 			if (data.photos?.length) {
+				const uploadedUrls = await Promise.all(
+				  data.photos.map(async (dataUrl) => {
+					const base64 = dataUrl.replace(/^data:.+;base64,/, '')
+					const mimeMatch = dataUrl.match(/^data:(.+);base64,/)
+					const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg'
+					const ext = mimeType.split('/')[1]
+					const buffer = Uint8Array.from(atob(base64), c => c.charCodeAt(0))
+					const filename = `${row.id}/${crypto.randomUUID()}.${ext}`
+			  
+					const { error } = await supabase.storage
+					  .from('mosque-photos')
+					  .upload(filename, buffer, {
+						contentType: mimeType,
+						upsert: false,
+					  })
+			  
+					if (error) throw new Error(`Upload failed: ${error.message}`)
+			  
+					const { data: { publicUrl } } = supabase.storage
+					  .from('mosque-photos')
+					  .getPublicUrl(filename)
+			  
+					return publicUrl
+				  })
+				)
+			  
 				await db.insert(mosquePhotos).values(
-					data.photos.map((url) => ({
-						mosqueId: row.id,
-						url,
-						uploadedById: userId,
-					})),
-				);
-			}
+				  uploadedUrls.map((url) => ({
+					mosqueId: row.id,
+					url, // now a real https:// URL
+					uploadedById: userId,
+				  }))
+				)
+			  }
 
 			return row;
 		} catch (err: any) {
