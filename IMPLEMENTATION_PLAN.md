@@ -81,11 +81,11 @@ This document breaks down the Product Requirements Document (PRD) into small, ex
 - [x] **6.1 Build Landing Page Hero (`src/routes/index.tsx`):**
   - Create a welcoming hero section explaining the app's value proposition ("Find nearby mosques easily").
   - Conditionally render "Login" and "Register" CTA buttons (linking to `/auth/login` and `/auth/register`) for unauthenticated users.
-- [ ] **6.2 Create `MosqueCard` Component (`src/components/MosqueCard.tsx`):**
+- [x] **6.2 Create `MosqueCard` Component (`src/components/MosqueCard.tsx`):**
   - Use shadcn `Card`.
   - Props: `name`, `distance`, `facilities` (boolean map), `thumbnailUrl`.
   - Render icons (e.g., Lucide React) for available facilities.
-- [ ] **6.3 Implement Discovery Section (`src/routes/index.tsx`):**
+- [x] **6.3 Implement Discovery Section (`src/routes/index.tsx`):**
   - Below the hero, call the `useGeolocation` hook.
   - If location is missing, show a button "Allow Location Access to Find Mosques".
   - If location exists, call the `getNearbyMosques` server function (via TanStack router loader or useQuery).
