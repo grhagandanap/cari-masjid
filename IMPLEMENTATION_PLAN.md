@@ -78,7 +78,7 @@ This document breaks down the Product Requirements Document (PRD) into small, ex
 ## Phase 6: UI - Discovery & Home Page
 *Building the main user experience.*
 
-- [ ] **6.1 Build Landing Page Hero (`src/routes/index.tsx`):**
+- [x] **6.1 Build Landing Page Hero (`src/routes/index.tsx`):**
   - Create a welcoming hero section explaining the app's value proposition ("Find nearby mosques easily").
   - Conditionally render "Login" and "Register" CTA buttons (linking to `/auth/login` and `/auth/register`) for unauthenticated users.
 - [ ] **6.2 Create `MosqueCard` Component (`src/components/MosqueCard.tsx`):**
