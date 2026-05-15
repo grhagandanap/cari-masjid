@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { db } from "#/lib/db.ts";
-import { mosques, mosquePhotos } from "#/db/schema.ts";
+import { mosques, mosquePhotos, user } from "#/db/schema.ts";
 import { calculateDistance } from "#/utils/distance.ts";
 import { sql } from "drizzle-orm";
 import { auth } from "#/lib/auth.ts";
@@ -101,33 +101,68 @@ export const createMosque = createServerFn({
 		) => data,
 	)
 	.handler(async ({ data }) => {
-		const request = getRequest();
-		const session = await auth.api.getSession({
-			headers: request.headers,
-		});
+		console.log("[createMosque] handler started, data:", data);
+		try {
+			const request = getRequest();
+			const session = await auth.api.getSession({
+				headers: request.headers,
+			});
 
-		if (!session?.user) {
-			throw new Error("Unauthorized");
+			if (!session?.user) {
+				throw new Error("Unauthorized");
+			}
+
+			const userId = session.user.id;
+			console.log("[createMosque] session userId:", userId);
+
+			// Verify the user actually exists in the DB
+			const [existingUser] = await db
+				.select({ id: user.id })
+				.from(user)
+				.where(sql`${user.id} = ${userId}` as any)
+				.limit(1);
+
+			console.log("[createMosque] existingUser:", existingUser);
+
+			if (!existingUser) {
+				console.error(
+					"[createMosque] User not found in DB. userId:",
+					userId,
+				);
+				throw new Error(
+					"Your account was not found in the database. Please log out and register again.",
+				);
+			}
+
+			const [row] = await db
+				.insert(mosques)
+				.values({
+					name: data.name,
+					type: data.type,
+					latitude: data.latitude,
+					longitude: data.longitude,
+					address: data.address ?? null,
+					website: data.website ?? null,
+					contact: data.contact ?? null,
+					hasWuduArea: data.hasWuduArea ?? false,
+					hasSeparateMenWomen: data.hasSeparateMenWomen ?? false,
+					hasParking: data.hasParking ?? false,
+					isWheelchairAccessible: data.isWheelchairAccessible ?? false,
+					hasRestrooms: data.hasRestrooms ?? false,
+					createdById: userId,
+				})
+				.returning();
+
+			console.log("[createMosque] insert succeeded, row:", row);
+			return row;
+		} catch (err: any) {
+			console.error("[createMosque] DB error:", {
+				message: err?.message,
+				code: err?.code,
+				detail: err?.detail,
+				constraint: err?.constraint,
+				table: err?.table,
+			});
+			throw err;
 		}
-
-		const [row] = await db
-			.insert(mosques)
-			.values({
-				name: data.name,
-				type: data.type,
-				latitude: data.latitude,
-				longitude: data.longitude,
-				address: data.address ?? null,
-				website: data.website ?? null,
-				contact: data.contact ?? null,
-				hasWuduArea: data.hasWuduArea ?? false,
-				hasSeparateMenWomen: data.hasSeparateMenWomen ?? false,
-				hasParking: data.hasParking ?? false,
-				isWheelchairAccessible: data.isWheelchairAccessible ?? false,
-				hasRestrooms: data.hasRestrooms ?? false,
-				createdById: session.user.id,
-			})
-			.returning();
-
-		return row;
 	});

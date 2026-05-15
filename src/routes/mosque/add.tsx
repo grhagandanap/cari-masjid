@@ -98,9 +98,16 @@ function AddMosquePage() {
 			});
 
 			toast.success(`${mosque.name} has been added successfully!`);
-			await navigate({ to: `/mosque/${mosque.id}` });
-		} catch {
-			setError("Failed to create mosque. Please try again.");
+			await navigate({
+				to: "/mosque/$mosqueId",
+				params: { mosqueId: mosque.id },
+			});
+		} catch (err: any) {
+			console.error("createMosque error:", err);
+			const message =
+				err?.message ||
+				"Failed to create mosque. Please try again.";
+			setError(message);
 		} finally {
 			setPending(false);
 		}
