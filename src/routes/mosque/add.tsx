@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Map, Marker } from "pigeon-maps";
+import { toast } from "sonner";
 import { requireAuth } from "#/lib/route-guard.ts";
 import { createMosque } from "#/lib/server/mosques.ts";
 import { Button } from "#/components/ui/button.tsx";
@@ -96,6 +97,7 @@ function AddMosquePage() {
 				},
 			});
 
+			toast.success(`${mosque.name} has been added successfully!`);
 			await navigate({ to: `/mosque/${mosque.id}` });
 		} catch {
 			setError("Failed to create mosque. Please try again.");

@@ -108,15 +108,15 @@ This document breaks down the Product Requirements Document (PRD) into small, ex
 ## Phase 8: UI - Crowdsourcing (Add Mosque)
 *Allowing users to contribute data.*
 
-- [ ] **8.1 Create Add Route (`src/routes/mosque/add.tsx`):**
+- [x] **8.1 Create Add Route (`src/routes/mosque/add.tsx`):**
   - Apply `beforeLoad` route guard using `requireAuth()` so only logged-in users can add mosques.
-- [ ] **8.2 Build the Form:**
+- [x] **8.2 Build the Form:**
   - Create inputs for Name, Address, Website, Contact.
   - Create shadcn Checkboxes for the facilities (Wudu, Men/Women separated, etc.).
-- [ ] **8.3 Map Pin Dropper:**
+- [x] **8.3 Map Pin Dropper:**
   - Install a basic map library (e.g., `react-leaflet` or `pigeon-maps`).
   - Render a map that updates a `lat`/`lng` state when the user clicks/drags the pin.
-- [ ] **8.4 Handle Form Submission:**
+- [x] **8.4 Handle Form Submission:**
   - Submit the data to the `createMosque` server function.
   - On success, show a `toast.success` and redirect to the home page or the newly created mosque's page.
 
