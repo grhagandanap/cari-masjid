@@ -66,11 +66,11 @@ This document breaks down the Product Requirements Document (PRD) into small, ex
   - Use `createServerFn({ method: 'GET' })`.
   - Accept arguments `lat`, `lng`, `radius` (optional).
   - Query the `mosques` table and return the list.
-- [ ] **5.2 Create `getMosqueDetails` server function (`src/lib/server/mosques.ts`):**
+- [x] **5.2 Create `getMosqueDetails` server function (`src/lib/server/mosques.ts`):**
   - Use `createServerFn({ method: 'GET' })`.
   - Accept argument `mosqueId`.
   - Query `mosques` left-joined with `mosque_photos`. Return the single mosque object.
-- [ ] **5.3 Create `createMosque` server function (`src/lib/server/mosques.ts`):**
+- [x] **5.3 Create `createMosque` server function (`src/lib/server/mosques.ts`):**
   - Use `createServerFn({ method: 'POST' })`.
   - Use `getServerSession()` to ensure the user is logged in.
   - Insert new mosque data into the `mosques` table.
