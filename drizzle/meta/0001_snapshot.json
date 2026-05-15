@@ -1,6 +1,6 @@
 {
-  "id": "6eda309f-9364-44ea-8edc-fb1fd8553687",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "8ee4808f-c6c0-4d6e-8a22-e5d07da0dcdf",
+  "prevId": "6eda309f-9364-44ea-8edc-fb1fd8553687",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -194,6 +194,12 @@
         },
         "name": {
           "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
           "type": "text",
           "primaryKey": false,
           "notNull": true

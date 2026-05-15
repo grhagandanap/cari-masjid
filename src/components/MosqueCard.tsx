@@ -15,7 +15,7 @@ import {
 } from "#/components/ui/card.tsx";
 
 interface Facilities {
-	hasWuduArea: boolean;
+	hasWudhuArea: boolean;
 	hasSeparateMenWomen: boolean;
 	hasParking: boolean;
 	isWheelchairAccessible: boolean;
@@ -37,7 +37,7 @@ export function MosqueCard({
 	thumbnailUrl,
 }: MosqueCardProps) {
 	const activeFacilities = [
-		{ icon: Droplets, label: "Wudu", active: facilities.hasWuduArea },
+		{ icon: Droplets, label: "Wudhu", active: facilities.hasWudhuArea },
 		{ icon: Users, label: "Gender sep.", active: facilities.hasSeparateMenWomen },
 		{ icon: Car, label: "Parking", active: facilities.hasParking },
 		{ icon: Accessibility, label: "Accessible", active: facilities.isWheelchairAccessible },

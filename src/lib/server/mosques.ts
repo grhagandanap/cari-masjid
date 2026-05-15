@@ -27,7 +27,7 @@ export const getNearbyMosques = createServerFn({
 				website: row.website,
 				contact: row.contact,
 				type: row.type,
-				hasWuduArea: row.hasWuduArea,
+				hasWudhuArea: row.hasWudhuArea,
 				hasSeparateMenWomen: row.hasSeparateMenWomen,
 				hasParking: row.hasParking,
 				isWheelchairAccessible: row.isWheelchairAccessible,
@@ -70,7 +70,7 @@ export const getMosqueDetails = createServerFn({
 			website: mosque.website,
 			contact: mosque.contact,
 			type: mosque.type,
-			hasWuduArea: mosque.hasWuduArea,
+			hasWudhuArea: mosque.hasWudhuArea,
 			hasSeparateMenWomen: mosque.hasSeparateMenWomen,
 			hasParking: mosque.hasParking,
 			isWheelchairAccessible: mosque.isWheelchairAccessible,
@@ -92,7 +92,7 @@ export const createMosque = createServerFn({
 				address?: string;
 				website?: string;
 				contact?: string;
-				hasWuduArea?: boolean;
+				hasWudhuArea?: boolean;
 				hasSeparateMenWomen?: boolean;
 				hasParking?: boolean;
 				isWheelchairAccessible?: boolean;
@@ -145,7 +145,7 @@ export const createMosque = createServerFn({
 					address: data.address ?? null,
 					website: data.website ?? null,
 					contact: data.contact ?? null,
-					hasWuduArea: data.hasWuduArea ?? false,
+					hasWudhuArea: data.hasWudhuArea ?? false,
 					hasSeparateMenWomen: data.hasSeparateMenWomen ?? false,
 					hasParking: data.hasParking ?? false,
 					isWheelchairAccessible: data.isWheelchairAccessible ?? false,

@@ -41,7 +41,7 @@ interface NearbyMosque {
 	website: string | null;
 	contact: string | null;
 	type: string;
-	hasWuduArea: boolean;
+	hasWudhuArea: boolean;
 	hasSeparateMenWomen: boolean;
 	hasParking: boolean;
 	isWheelchairAccessible: boolean;
@@ -82,7 +82,7 @@ function Landing() {
 		{
 			icon: Sparkles,
 			title: "Fasilitas Terverifikasi",
-			desc: "Lihat area wudu, parkir, aksesibilitas dan lainnya sebelum Anda tiba.",
+			desc: "Lihat area wudhu, parkir, aksesibilitas dan lainnya sebelum Anda tiba.",
 		},
 		{
 			icon: HandHeart,
@@ -172,15 +172,14 @@ function Landing() {
 						<Button
 							asChild
 							size="lg"
-							className="bg-white px-7 text-emerald-700 hover:bg-emerald-50"
+							className="bg-white px-8 font-semibold text-emerald-700 shadow-md hover:bg-emerald-50 hover:shadow-lg"
 						>
 							<Link to="/auth/register">Buat akun gratis</Link>
 						</Button>
 						<Button
 							asChild
 							size="lg"
-							variant="outline"
-							className="border-white/40 bg-transparent px-7 text-white hover:bg-white/10 hover:text-white-600"
+							className="border-2 border-white bg-white/15 px-8 font-medium text-white backdrop-blur-sm hover:bg-white/25 hover:border-white/80"
 						>
 							<Link to="/auth/login" search={{ redirect: undefined }}>
 								Saya sudah punya akun
@@ -214,7 +213,7 @@ function Dashboard() {
 	const [filterType, setFilterType] = useState<"all" | "masjid" | "musholla">("all");
 	const [filterMaxDist, setFilterMaxDist] = useState(false);
 	const [filterFacilities, setFilterFacilities] = useState({
-		wudu: false, parking: false, toilet: false, separate: false, wheelchair: false,
+		wudhu: false, parking: false, toilet: false, separate: false, wheelchair: false,
 	});
 	const [photosCache, setPhotosCache] = useState<Record<string, string[]>>({});
 	const [photosLoading, setPhotosLoading] = useState(false);
@@ -244,7 +243,7 @@ function Dashboard() {
 			if (q && !m.name.toLowerCase().includes(q) && !m.address?.toLowerCase().includes(q)) return false;
 			if (filterType !== "all" && m.type.toLowerCase() !== filterType) return false;
 			if (filterMaxDist && m.distance > 1) return false;
-			if (filterFacilities.wudu && !m.hasWuduArea) return false;
+			if (filterFacilities.wudhu && !m.hasWudhuArea) return false;
 			if (filterFacilities.parking && !m.hasParking) return false;
 			if (filterFacilities.toilet && !m.hasRestrooms) return false;
 			if (filterFacilities.separate && !m.hasSeparateMenWomen) return false;
@@ -471,7 +470,7 @@ function Dashboard() {
 										<div className="flex flex-wrap gap-1">
 											{[
 												{ key: "dist", label: "≤ 1 km", active: filterMaxDist, toggle: () => setFilterMaxDist((v) => !v) },
-												{ key: "wudu", label: "Wudu", active: filterFacilities.wudu, toggle: () => setFilterFacilities((v) => ({ ...v, wudu: !v.wudu })) },
+												{ key: "wudhu", label: "Wudhu", active: filterFacilities.wudhu, toggle: () => setFilterFacilities((v) => ({ ...v, wudhu: !v.wudhu })) },
 												{ key: "parking", label: "Parkir", active: filterFacilities.parking, toggle: () => setFilterFacilities((v) => ({ ...v, parking: !v.parking })) },
 												{ key: "toilet", label: "Toilet", active: filterFacilities.toilet, toggle: () => setFilterFacilities((v) => ({ ...v, toilet: !v.toilet })) },
 												{ key: "separate", label: "Pisah P/W", active: filterFacilities.separate, toggle: () => setFilterFacilities((v) => ({ ...v, separate: !v.separate })) },
@@ -598,7 +597,7 @@ function MosqueSidebarDetail({
 	onDirections: () => void;
 }) {
 	const facilities: { icon: React.ElementType; label: string; value: boolean }[] = [
-		{ icon: Droplets, label: "Area Wudu", value: mosque.hasWuduArea },
+		{ icon: Droplets, label: "Area Wudhu", value: mosque.hasWudhuArea },
 		{ icon: Users, label: "Pisah Pria/Wanita", value: mosque.hasSeparateMenWomen },
 		{ icon: Car, label: "Parkir", value: mosque.hasParking },
 		{ icon: Accessibility, label: "Ramah Kursi Roda", value: mosque.isWheelchairAccessible },

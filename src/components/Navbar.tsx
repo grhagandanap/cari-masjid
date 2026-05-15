@@ -110,7 +110,11 @@ export function Navbar() {
 									Masuk
 								</Link>
 							</Button>
-							<Button asChild size="sm">
+							<Button
+								asChild
+								size="sm"
+								className="bg-gradient-to-tr from-[#2f6a4a] to-[#328f97] text-white"
+							>
 								<Link to="/auth/register">Daftar</Link>
 							</Button>
 						</div>
@@ -154,7 +158,7 @@ export function Navbar() {
 										Masuk
 									</Link>
 								</Button>
-								<Button asChild>
+								<Button asChild >
 									<Link to="/auth/register">Daftar</Link>
 								</Button>
 							</div>

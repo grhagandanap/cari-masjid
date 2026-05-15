@@ -44,7 +44,7 @@ This document breaks down the Product Requirements Document (PRD) into small, ex
 - [x] **3.1 Create `mosques` Table:**
   - Fields: `id` (uuid, pk), `name` (text), `latitude` (real), `longitude` (real), `address` (text), `website` (text), `contact` (text), `createdAt` (timestamp), `createdById` (text, fk to user).
 - [x] **3.2 Create `facilities` Table (or JSONb field on mosques):**
-  - Let's use boolean columns directly on the `mosques` table for simplicity: `hasWuduArea` (boolean), `hasSeparateMenWomen` (boolean), `hasParking` (boolean), `isWheelchairAccessible` (boolean), `hasRestrooms` (boolean).
+  - Let's use boolean columns directly on the `mosques` table for simplicity: `hasWudhuArea` (boolean), `hasSeparateMenWomen` (boolean), `hasParking` (boolean), `isWheelchairAccessible` (boolean), `hasRestrooms` (boolean).
 - [x] **3.3 Create `mosque_photos` Table:**
   - Fields: `id` (uuid, pk), `mosqueId` (uuid, fk), `url` (text), `uploadedById` (text, fk).
 - [x] **3.4 Generate & Push Migrations:**
@@ -112,7 +112,7 @@ This document breaks down the Product Requirements Document (PRD) into small, ex
   - Apply `beforeLoad` route guard using `requireAuth()` so only logged-in users can add mosques.
 - [x] **8.2 Build the Form:**
   - Create inputs for Name, Address, Website, Contact.
-  - Create shadcn Checkboxes for the facilities (Wudu, Men/Women separated, etc.).
+  - Create shadcn Checkboxes for the facilities (Wudhu, Men/Women separated, etc.).
 - [x] **8.3 Map Pin Dropper:**
   - Install a basic map library (e.g., `react-leaflet` or `pigeon-maps`).
   - Render a map that updates a `lat`/`lng` state when the user clicks/drags the pin.

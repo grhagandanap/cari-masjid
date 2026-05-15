@@ -33,7 +33,7 @@ interface FacilityOption {
 }
 
 interface FacilityState {
-	hasWuduArea: boolean;
+	hasWudhuArea: boolean;
 	hasSeparateMenWomen: boolean;
 	hasParking: boolean;
 	isWheelchairAccessible: boolean;
@@ -41,7 +41,7 @@ interface FacilityState {
 }
 
 const facilityOptions: FacilityOption[] = [
-	{ id: "wudu", label: "Area Wudu", key: "hasWuduArea" },
+	{ id: "wudhu", label: "Area Wudhu", key: "hasWudhuArea" },
 	{ id: "gender", label: "Pisah Pria/Wanita", key: "hasSeparateMenWomen" },
 	{ id: "parking", label: "Parkir", key: "hasParking" },
 	{ id: "accessible", label: "Ramah Kursi Roda", key: "isWheelchairAccessible" },
@@ -63,7 +63,7 @@ function AddMosquePage() {
 	const [website, setWebsite] = useState("");
 	const [contact, setContact] = useState("");
 	const [facilities, setFacilities] = useState<FacilityState>({
-		hasWuduArea: false,
+		hasWudhuArea: false,
 		hasSeparateMenWomen: false,
 		hasParking: false,
 		isWheelchairAccessible: false,

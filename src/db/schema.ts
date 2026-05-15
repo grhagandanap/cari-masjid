@@ -62,7 +62,7 @@ export const mosques = pgTable("mosques", {
 	address: text("address"),
 	website: text("website"),
 	contact: text("contact"),
-	hasWuduArea: boolean("has_wudu_area").notNull().default(false),
+	hasWudhuArea: boolean("has_wudhu_area").notNull().default(false),
 	hasSeparateMenWomen: boolean("has_separate_men_women").notNull().default(false),
 	hasParking: boolean("has_parking").notNull().default(false),
 	isWheelchairAccessible: boolean("is_wheelchair_accessible").notNull().default(false),

@@ -30,7 +30,7 @@ CREATE TABLE "mosques" (
 	"address" text,
 	"website" text,
 	"contact" text,
-	"has_wudu_area" boolean DEFAULT false NOT NULL,
+	"has_wudhu_area" boolean DEFAULT false NOT NULL,
 	"has_separate_men_women" boolean DEFAULT false NOT NULL,
 	"has_parking" boolean DEFAULT false NOT NULL,
 	"is_wheelchair_accessible" boolean DEFAULT false NOT NULL,

@@ -19,7 +19,7 @@
 
 ### 3.2. Mosque Details
 *   **Information Display:** Name, address, and operating hours.
-*   **Facilities:** Indicators for essential amenities (e.g., Wudu area, separated prayer areas for men/women, parking availability, wheelchair accessibility, restrooms).
+*   **Facilities:** Indicators for essential amenities (e.g., Wudhu area, separated prayer areas for men/women, parking availability, wheelchair accessibility, restrooms).
 *   **Media:** Photo gallery of the mosque (exterior and interior).
 *   **Links:** Official website or social media links.
 
@@ -31,7 +31,7 @@
 ## 4. Nice-to-Have Features (Future Enhancements)
 *   **Direct Donations (Sadaqah/Infaq):** Integration with payment gateways (e.g., Midtrans, Stripe) or direct bank transfer details to allow users to donate directly to the mosque's verified accounts.
 *   **Prayer Times Integration:** Display current local prayer times and Iqamah schedules for specific mosques.
-*   **Reviews & Ratings:** Allow users to leave tips or reviews about the mosque's condition (e.g., "Very clean wudu area", "Crowded on Fridays").
+*   **Reviews & Ratings:** Allow users to leave tips or reviews about the mosque's condition (e.g., "Very clean wudhu area", "Crowded on Fridays").
 
 ## 5. User Flows
 
