@@ -1,5 +1,27 @@
-import { createFileRoute, useParams } from "@tanstack/react-router";
+import { createFileRoute, useParams, Link } from "@tanstack/react-router";
+import {
+	Check,
+	X,
+	MapPin,
+	Navigation,
+	Globe,
+	Phone,
+	Car,
+	Droplets,
+	Users,
+	Bath,
+	Accessibility,
+	ImageOff,
+	ArrowLeft,
+} from "lucide-react";
 import { getMosqueDetails } from "#/lib/server/mosques.ts";
+import { Button } from "#/components/ui/button.tsx";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "#/components/ui/card.tsx";
 
 export const Route = createFileRoute("/mosque/$mosqueId")({
 	loader: async ({ params }) => {
@@ -13,19 +35,162 @@ function MosqueDetailsPage() {
 	const { mosqueId } = useParams({ from: "/mosque/$mosqueId" });
 	const { mosque } = Route.useLoaderData();
 
+	if (!mosque) {
+		return (
+			<div className="flex flex-col px-4 py-12">
+				<div className="mx-auto w-full max-w-4xl text-center">
+					<h1 className="text-2xl font-bold">Mosque not found</h1>
+					<p className="mt-2 text-muted-foreground">
+						We couldn&apos;t find a mosque with ID <code>{mosqueId}</code>.
+					</p>
+					<Button asChild className="mt-6">
+						<Link to="/">
+							<ArrowLeft className="mr-2 size-4" />
+							Back to Home
+						</Link>
+					</Button>
+				</div>
+			</div>
+		);
+	}
+
+	const facilityItems = [
+		{ icon: Droplets, label: "Wudu Area", value: mosque.hasWuduArea },
+		{ icon: Users, label: "Separate Men/Women", value: mosque.hasSeparateMenWomen },
+		{ icon: Car, label: "Parking", value: mosque.hasParking },
+		{ icon: Accessibility, label: "Wheelchair Accessible", value: mosque.isWheelchairAccessible },
+		{ icon: Bath, label: "Restrooms", value: mosque.hasRestrooms },
+	];
+
+	const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${mosque.latitude},${mosque.longitude}`;
+
 	return (
 		<div className="flex flex-col px-4 py-12">
 			<div className="mx-auto w-full max-w-4xl">
-				<h1 className="text-3xl font-bold">Mosque Details</h1>
-				<p className="mt-2 text-muted-foreground">ID: {mosqueId}</p>
-				{mosque ? (
-					<div className="mt-6">
-						<h2 className="text-2xl font-semibold">{mosque.name}</h2>
-						<p className="mt-1 text-muted-foreground">{mosque.address}</p>
+				<Button asChild variant="ghost" className="mb-6 -ml-3">
+					<Link to="/">
+						<ArrowLeft className="mr-2 size-4" />
+						Back
+					</Link>
+				</Button>
+
+				{/* Header */}
+				<div className="space-y-2">
+					<div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+						{mosque.type}
 					</div>
-				) : (
-					<p className="mt-6 text-muted-foreground">Mosque not found.</p>
+					<h1 className="text-4xl font-extrabold tracking-tight">{mosque.name}</h1>
+					{mosque.address ? (
+						<p className="flex items-center gap-1.5 text-lg text-muted-foreground">
+							<MapPin className="size-5 shrink-0" />
+							{mosque.address}
+						</p>
+					) : null}
+				</div>
+
+				{/* Actions */}
+				<div className="mt-6">
+					<Button asChild size="lg" className="gap-2">
+						<a href={directionsUrl} target="_blank" rel="noopener noreferrer">
+							<Navigation className="size-5" />
+							Get Directions
+						</a>
+					</Button>
+				</div>
+
+				{/* Contact & Links */}
+				{(mosque.website || mosque.contact) && (
+					<Card className="mt-8">
+						<CardHeader>
+							<CardTitle>Contact</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-3">
+							{mosque.website ? (
+								<a
+									href={mosque.website}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="flex items-center gap-2 text-primary hover:underline"
+								>
+									<Globe className="size-4" />
+									{mosque.website}
+								</a>
+							) : null}
+							{mosque.contact ? (
+								<a
+									href={`tel:${mosque.contact}`}
+									className="flex items-center gap-2 text-primary hover:underline"
+								>
+									<Phone className="size-4" />
+									{mosque.contact}
+								</a>
+							) : null}
+						</CardContent>
+					</Card>
 				)}
+
+				{/* Facilities */}
+				<Card className="mt-8">
+					<CardHeader>
+						<CardTitle>Facilities</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<ul className="grid gap-3 sm:grid-cols-2">
+							{facilityItems.map((item) => (
+								<li
+									key={item.label}
+									className="flex items-center gap-3"
+								>
+									<div
+										className={`flex size-6 items-center justify-center rounded-full ${
+											item.value
+												? "bg-green-100 text-green-700"
+												: "bg-red-100 text-red-700"
+										}`}
+									>
+										{item.value ? (
+											<Check className="size-4" />
+										) : (
+											<X className="size-4" />
+										)}
+									</div>
+									<span className="flex items-center gap-2 text-sm">
+										<item.icon className="size-4 text-muted-foreground" />
+										{item.label}
+									</span>
+								</li>
+							))}
+						</ul>
+					</CardContent>
+				</Card>
+
+				{/* Photo Gallery */}
+				<div className="mt-8">
+					<h2 className="mb-4 text-2xl font-bold">Photos</h2>
+					{mosque.photos && mosque.photos.length > 0 ? (
+						<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+							{mosque.photos.map((url, idx) => (
+								<div
+									key={idx}
+									className="aspect-video overflow-hidden rounded-lg bg-muted"
+								>
+									<img
+										src={url}
+										alt={`${mosque.name} photo ${idx + 1}`}
+										className="h-full w-full object-cover"
+									/>
+								</div>
+							))}
+						</div>
+					) : (
+						<div className="flex h-40 flex-col items-center justify-center rounded-lg border border-dashed">
+							<ImageOff className="size-8 text-muted-foreground" />
+							<p className="mt-2 text-sm text-muted-foreground">
+								No photos available.
+							</p>
+						</div>
+					)}
+				</div>
 			</div>
 		</div>
 	);
