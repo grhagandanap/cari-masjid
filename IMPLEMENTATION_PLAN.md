@@ -41,13 +41,13 @@ This document breaks down the Product Requirements Document (PRD) into small, ex
 ## Phase 3: Database Schema Design (Mosque Domain)
 *Create schemas for the core domain in `src/db/schema.ts`.*
 
-- [ ] **3.1 Create `mosques` Table:**
+- [x] **3.1 Create `mosques` Table:**
   - Fields: `id` (uuid, pk), `name` (text), `latitude` (real), `longitude` (real), `address` (text), `website` (text), `contact` (text), `createdAt` (timestamp), `createdById` (text, fk to user).
-- [ ] **3.2 Create `facilities` Table (or JSONb field on mosques):**
+- [x] **3.2 Create `facilities` Table (or JSONb field on mosques):**
   - Let's use boolean columns directly on the `mosques` table for simplicity: `hasWuduArea` (boolean), `hasSeparateMenWomen` (boolean), `hasParking` (boolean), `isWheelchairAccessible` (boolean), `hasRestrooms` (boolean).
-- [ ] **3.3 Create `mosque_photos` Table:**
+- [x] **3.3 Create `mosque_photos` Table:**
   - Fields: `id` (uuid, pk), `mosqueId` (uuid, fk), `url` (text), `uploadedById` (text, fk).
-- [ ] **3.4 Generate & Push Migrations:**
+- [x] **3.4 Generate & Push Migrations:**
   - Run `npx drizzle-kit generate` and `npx drizzle-kit push` to update the local database.
 
 ## Phase 4: Core Utility Functions

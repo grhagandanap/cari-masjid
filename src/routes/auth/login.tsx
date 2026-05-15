@@ -28,7 +28,7 @@ function LoginPage() {
 	const [error, setError] = useState<string | null>(null);
 	const [pending, setPending] = useState(false);
 
-	async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+	async function onSubmit(e: React.SubmitEvent<HTMLFormElement>) {
 		e.preventDefault();
 		setError(null);
 		setPending(true);
