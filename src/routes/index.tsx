@@ -126,20 +126,6 @@ function Landing() {
 					dapatkan petunjuk arah, dan berkontribusi pada peta komunitas.
 				</p>
 
-				{/* <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
-					<Button asChild size="lg" className="gap-2 px-7">
-						<Link to="/auth/register">
-							Get Started
-							<ArrowRight className="size-4" />
-						</Link>
-					</Button>
-					<Button asChild variant="outline" size="lg" className="px-7">
-						<Link to="/auth/login" search={{ redirect: undefined }}>
-							Login
-						</Link>
-					</Button>
-				</div> */}
-
 				<p className="mt-6 text-xs text-muted-foreground">
 					Gratis selamanya · Tanpa kartu kredit
 				</p>
@@ -314,7 +300,7 @@ function Dashboard() {
 								) : null}
 
 								{/* Mosque markers */}
-								{mosques.map((m) => (
+								{filteredMosques.map((m) => (
 									<Marker
 										key={m.id}
 										anchor={[m.latitude, m.longitude]}
@@ -590,7 +576,6 @@ function MosqueSidebarDetail({
   photos,
   photosLoading,
   onBack,
-  onDirections,
 }: {
   mosque: NearbyMosque;
   photos: string[];
@@ -741,10 +726,6 @@ function MosqueSidebarDetail({
 
 			{/* Footer actions */}
 			<div className="shrink-0 space-y-2 border-t border-border p-3">
-				<Button className="w-full gap-2" onClick={onDirections}>
-					<Navigation className="size-4" />
-					Petunjuk Arah
-				</Button>
 				<Button asChild variant="outline" className="w-full gap-2">
 					<Link to="/donasi">
 						<Heart className="size-4" />
