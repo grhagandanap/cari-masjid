@@ -40,8 +40,10 @@ function Home() {
 			setLoading(true);
 			setFetchError(null);
 			getNearbyMosques({
-				lat: location.lat,
-				lng: location.lng,
+				data: {
+					lat: location.lat,
+					lng: location.lng,
+				},
 			})
 				.then((data) => setMosques(data))
 				.catch(() => setFetchError("Failed to load nearby mosques."))
