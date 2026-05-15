@@ -53,9 +53,9 @@ This document breaks down the Product Requirements Document (PRD) into small, ex
 ## Phase 4: Core Utility Functions
 *Standalone helper functions for the frontend.*
 
-- [ ] **4.1 Haversine Distance Utility (`src/utils/distance.ts`):**
+- [x] **4.1 Haversine Distance Utility (`src/utils/distance.ts`):**
   - Export a function `calculateDistance(lat1, lon1, lat2, lon2)` that returns the distance in kilometers.
-- [ ] **4.2 Geolocation Hook (`src/hooks/use-geolocation.ts`):**
+- [x] **4.2 Geolocation Hook (`src/hooks/use-geolocation.ts`):**
   - Export a React hook `useGeolocation()` that calls `navigator.geolocation.getCurrentPosition`.
   - Return `{ location: { lat, lng }, error, isLoading }`.
 
