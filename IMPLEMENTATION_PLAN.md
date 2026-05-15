@@ -62,7 +62,7 @@ This document breaks down the Product Requirements Document (PRD) into small, ex
 ## Phase 5: Backend API Functions (TanStack Start Server)
 *These functions fetch data securely from the server.*
 
-- [ ] **5.1 Create `getNearbyMosques` server function (`src/lib/server/mosques.ts`):**
+- [x] **5.1 Create `getNearbyMosques` server function (`src/lib/server/mosques.ts`):**
   - Use `createServerFn({ method: 'GET' })`.
   - Accept arguments `lat`, `lng`, `radius` (optional).
   - Query the `mosques` table and return the list.
