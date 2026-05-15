@@ -24,17 +24,17 @@ This document breaks down the Product Requirements Document (PRD) into small, ex
 ## Phase 2: Authentication & User Management (Better Auth)
 *Setting up user authentication, which is required for crowdsourcing features.*
 
-- [ ] **2.1 Configure Better Auth (`src/lib/auth.ts`):**
+- [x] **2.1 Configure Better Auth (`src/lib/auth.ts`):**
   - Set up `better-auth` instance using the Drizzle adapter (`drizzleAdapter(db, schema)`).
   - Enable the `emailAndPassword` plugin.
-- [ ] **2.2 Create Auth Client (`src/lib/auth-client.ts`):**
+- [x] **2.2 Create Auth Client (`src/lib/auth-client.ts`):**
   - Create and export the `createAuthClient` instance for frontend usage.
-- [ ] **2.3 Auth API Route (`src/routes/api/auth/$.ts`):**
+- [x] **2.3 Auth API Route (`src/routes/api/auth/$.ts`):**
   - Mount the Better Auth handler to TanStack Start API routes (`auth.handler`).
-- [ ] **2.4 Authentication UI Pages:**
+- [x] **2.4 Authentication UI Pages:**
   - Create `src/routes/auth/login.tsx` with a login form (email, password) and redirect-back support.
   - Create `src/routes/auth/register.tsx` with a registration form (name, email, password).
-- [ ] **2.5 Route Guards / Hooks (`src/lib/route-guard.ts` & `src/hooks/use-auth.ts`):**
+- [x] **2.5 Route Guards / Hooks (`src/lib/route-guard.ts` & `src/hooks/use-auth.ts`):**
   - Create a `useAuth` hook exporting session state and a `signOut` method.
   - Create a `requireAuth` function for TanStack router `beforeLoad` to protect routes.
 
