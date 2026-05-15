@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: carimasjid
+      POSTGRES_PASSWORD: carimasjid
+      POSTGRES_DB: carimasjid
+    ports:
+      - "5440:5432"
+    volumes:
+      - carimasjid_data:/var/lib/postgresql/data
+
+volumes:
+  carimasjid_data:
