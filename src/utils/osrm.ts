@@ -109,7 +109,7 @@ export function lngLatToPixel(
 	height: number,
 ): [number, number] {
 	const TILE = 256;
-	const scale = Math.pow(2, zoom);
+	const scale = 2 ** zoom;
 
 	const wx = (l: number) => ((l + 180) / 360) * TILE * scale;
 	const wy = (l: number) => {
