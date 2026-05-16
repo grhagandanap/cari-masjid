@@ -4,4 +4,4 @@ compatibility_date = "2026-05-15"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
-BETTER_AUTH_URL = "https://cari-masjid.gg-project.workers.dev"
+BETTER_AUTH_URL = "https://carimasjid.web.id"

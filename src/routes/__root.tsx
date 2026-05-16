@@ -13,23 +13,14 @@ export const Route = createRootRoute({
   ),
   head: () => ({
     meta: [
-      {
-        charSet: 'utf-8',
-      },
-      {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
-      },
-      {
-        title: 'TanStack Start Starter',
-      },
+        { charSet: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { title: 'Cari Masjid' }, // ← change title here
     ],
     links: [
-      {
-        rel: 'stylesheet',
-        href: appCss,
-      },
-    ],
+    { rel: 'stylesheet', href: appCss },
+    { rel: 'icon', href: '/GG Logo (Square).jpg' }, // ← add favicon here
+  ],
   }),
   shellComponent: RootDocument,
 })

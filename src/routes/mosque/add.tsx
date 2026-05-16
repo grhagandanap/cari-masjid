@@ -129,7 +129,7 @@ function AddMosquePage() {
 		setPhotos((prev) => prev.filter((_, i) => i !== idx));
 	}
 
-	async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+	async function onSubmit(e: React.SubmitEvent<HTMLFormElement>) {
 		e.preventDefault();
 		setError(null);
 		setPending(true);
